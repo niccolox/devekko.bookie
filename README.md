@@ -2,9 +2,39 @@
 
 Bookie is a set of [Agent Skills](https://agentskills.io) that helps a builder run a product bet with Claude Code or another agent. A bet is a product idea that gets a fast build, real users, and a go, no-go, or pivot decision on a fixed date.
 
-You install the skills with the [`skills` CLI](https://skills.sh), like any other skill. The first skill that you run, `/setup-bookie`, then adds [pstack](https://github.com/backnotprop/pstack), which the bet skills use.
+## Why a bookie
+
+Each product idea is a bet. You put in time and money. On the decision date, the bet is settled: go, no-go, or pivot. A bookie takes the bet, writes down the terms before the start, and pays out on the result, not on how the backer feels about it. This skill does the same job for a product.
+
+A builder who is excited about an idea is a bad judge of it. The builder sees a demo that works, three friends who say "nice", and one person who will "probably pay". So the builder moves the decision date by two weeks, then again. Bookie stops that:
+
+- **The terms come first.** Before the first line of code, you write the core question, 3 to 6 kill criteria, and a decision date. Each criterion has a number and names the evidence that counts. For example: "4 of 10 trial users run the report a second time in week 2."
+- **The terms do not move.** After the frame stage, no agent changes a criterion, a threshold, or the date. Only you can, and the record shows that you did.
+- **Bookie counts acts, not words.** A compliment is not usage. A promise is not a payment. The Customer evidence table logs only what a person did.
+- **The bet is settled on the date.** At the score stage, the agent runs the commands that make the evidence again and sets each criterion to `met` or `not met`. Then you write the memo and make the call.
+
+A no-go is a good result. It costs two to four weeks, not two years.
+
+## The register
+
+`BOOKIE.md` at the project root is the register of the bets. It shows every bet in the project in one table, so you and each agent can see the state at a glance:
+
+```markdown
+| Bet | Name | Status | Stage | Decision date | Criteria | Updated |
+| --- | --- | --- | --- | --- | --- | --- |
+| BET-001 | Invoice match | Decided: no-go | finished | 2026-09-30 | 1 met, 3 not met | 2026-09-30 |
+| BET-002 | Weekly cash report | With users | iterate (9 of 11) | 2026-12-04 | 2 met, 2 open | 2026-11-16 |
+| BET-003 | Supplier risk alerts | Framing | frame (2 of 11) | | none | 2026-11-17 |
+```
+
+- **Bookie writes it, not you.** The script writes the register again after each stage, so each stage commit holds the current state. An edit by hand is replaced at the next stage.
+- **Agents read it first.** Before a task, an agent finds the bet in the register. When the bet is not yet at the build stage, the agent writes no code. It asks you to type `/bookie BET-NNN`.
+- **It keeps old bets.** A bet with the status `Decided: no-go` stays in the table. The next idea starts with a record of what failed and why.
+- **It is as private as the record.** When git ignores the bet record, git also ignores `BOOKIE.md`.
 
 ## Install bookie in a project
+
+You install the skills with the [`skills` CLI](https://skills.sh), like any other skill. The first skill that you run, `/setup-bookie`, then adds [pstack](https://github.com/backnotprop/pstack), which the bet skills use.
 
 You need Node.js for `npx`, `git`, and Python 3.11 or later.
 
@@ -73,7 +103,7 @@ npx skills add backnotprop/pstack --skill '*' -y
 
 - **It runs eleven stages:** setup, frame, build-or-buy, scope, evals, build, harden, users, iterate, score, memo. Each stage must pass a gate before the next stage starts.
 - **It asks you each product call** through the question tool: the kill criteria, the decision date, the scope, the human step, and the decision.
-- **It keeps a register.** `BOOKIE.md` at the project root has one row for each bet: its name, status, stage, decision date, and criteria results. Bookie writes it again after each stage. When git ignores the bet record, git also ignores `BOOKIE.md`.
+- **It keeps a register.** `BOOKIE.md` has one row for each bet. See [The register](#the-register).
 - **It puts the bet before the build.** `AGENTS.md` tells each agent to read `BOOKIE.md` and run the record checker before a task. An agent writes no code for a bet that is not framed or is not yet at the build stage. `/poteto-mode` starts after those steps.
 - **It commits.** Each finished or skipped stage is one local commit, `bookie(BET-NNN): <stage> done`, on the branch `bet/bet-nnn`. Files named like secrets stay out of the commit. It never pushes.
 - **It saves prompts.** Each filled prompt goes to `.local/bookie/BET-NNN/prompts/`, which git ignores.

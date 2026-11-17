@@ -10,6 +10,50 @@ This skill runs one bet through eleven stages in a fixed order. Each stage does 
 
 The operator started this skill to run the whole bet. So at each stage, read the SKILL.md that the stage names in `follow` and do its steps. Do not call those skills through the skill tool, because they start only from a slash command.
 
+## Bookie
+
+Bookie is a set of five skills. They help a builder test a product idea with real users before the builder commits more time to it. This skill runs the full bet. Each of the other four skills owns one part of it:
+
+| Skill | Part of the bet |
+| --- | --- |
+| `setup-bookie` | Installs pstack, writes the model settings and the project files, and commits them. It runs once for each project. |
+| `bet-record` | Owns the bet record: the frame, the build log, the score, and the memo. Its checker owns the format of the record. |
+| `bet-diligence` | Reviews one product, company, repository, or dependency that the bet could use. The build-or-buy stage uses it. |
+| `bet-discovery` | Plans the talks with users and logs what each person did. The users stage uses it. |
+
+Explain this to the operator in at most five sentences when they ask what Bookie is, or when a new bet starts.
+
+## Bets
+
+A bet is a product idea that gets a fast build, real users, and a go, no-go, or pivot decision on a fixed date. One record file holds every bet of the project, with one `## BET-NNN: <name>` section for each bet. A bet has these parts:
+
+| Part | What it holds | Who sets it |
+| --- | --- | --- |
+| Core question | One question that a build can answer | The agent proposes it at the frame stage |
+| Kill criteria | 3 to 6 criteria, each with a number as its threshold and the evidence that counts | The operator confirms them at the frame stage |
+| Decision date | A date 2 to 4 weeks after the build starts | The operator confirms it at the frame stage |
+| Build log | One row for each verified unit, with a pointer to its evidence | The agent adds a row after each verification |
+| Customer evidence | One row for each act of a real person, such as a use, a payment, or a refusal | The agent adds a row from the operator's facts |
+| Results | `met`, `not met`, or `open` for each criterion | The agent sets them at the score stage from fresh evidence |
+| Status and memo | The decision and its reasons. A bet ends with the status `Decided` | The operator makes the decision at the memo stage |
+
+The kill criteria are fixed after the frame stage. A bet that misses its criteria on the decision date is a no-go or a pivot, not a reason to move the date. `BOOKIE.md` shows each bet with its status and its stage. See **Register**.
+
+## Bookie and poteto-mode
+
+The bet decides whether to build. **poteto-mode** decides how to build each unit. The kill criteria connect the two: each criterion is a done check that a unit must prove.
+
+1. Stages 1 to 5 come before any code. They frame the bet, look for a product to buy, and make the examples and the eval set.
+2. At the build stage, read the poteto-mode SKILL.md and follow its Feature playbook on the thin slice. Use the poteto-mode principles, subagents, and proof rules for that work.
+3. Give poteto-mode the bet id, the stage, and the kill criteria that the unit must move. The eval set from stage 5 is the proof that the unit works.
+4. After each verified unit, return to this skill. Log the unit with **bet-record** `log`, and write the register again.
+5. At the iterate stage, use the poteto-mode playbook that fits each fix, such as Bug fix. Log each fix in the same way.
+6. At the score stage, run the commands that make the evidence again, as the **prove-it-works** principle says.
+
+Outside a bookie session, the project `AGENTS.md` keeps the same order. Each task reads `BOOKIE.md` and runs the record checker before `/poteto-mode` starts. When the bet is not yet at the build stage, the agent writes no code and asks the operator to type `/bookie BET-NNN`.
+
+The poteto-mode autonomy rules do not cover product calls. Under a poteto-mode grant such as "run until done", still ask the operator each product call in **Rules**. The two skills agree on the actions that always need the operator: a force-push to a shared branch, a deploy, a data deletion, and a message to a customer.
+
 ## Start
 
 1. Find the bet record from the project `CLAUDE.md` or `AGENTS.md`, as **bet-record** says. Call its folder the record folder.
