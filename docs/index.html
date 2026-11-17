@@ -6,8 +6,8 @@
 <title>devekko.bookie: Agent Skills for product bets</title>
 <meta name="description" content="Five Agent Skills for Claude Code and other coding agents. Run each product idea as a bet with fixed terms, a thin build, real users, and a go, no-go, or pivot call on a date you pick first.">
 <meta property="og:title" content="devekko.bookie">
-<meta property="og:description" content="Set the kill criteria before your agent writes line one.">
-<meta property="og:image" content="https://niccolox.github.io/devekko.bookie/assets/bookie-brochure.png">
+<meta property="og:description" content="Set the no-go criteria before your agent writes line one.">
+<meta property="og:image" content="https://www.niccolox.com/devekko.bookie/assets/bookie-brochure.png">
 <link rel="icon" href="assets/bookie-logo.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,7 +48,7 @@
   .wrap { max-width: 1120px; margin: 0 auto; padding-inline: clamp(16px, 5vw, 48px); }
 
   /* top bar */
-  .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-block: 28px; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-block: 22px; }
   .brand { display: flex; align-items: center; gap: 14px; color: var(--cream); text-decoration: none; }
   .brand svg { width: 70px; height: auto; flex: none; }
   .brand span { font-size: 34px; font-weight: 800; letter-spacing: -.8px; }
@@ -57,36 +57,61 @@
   .top nav a:hover { color: var(--cream); }
 
   /* hero */
-  .hero { padding-block: clamp(32px, 7vw, 72px) 24px; }
+  .hero { padding-block: clamp(12px, 3vw, 28px) 40px; }
   h1 {
     font-family: var(--display); font-weight: 700;
-    font-size: clamp(40px, 7vw, 72px); line-height: 1.04; letter-spacing: -1px;
-    margin: 0 0 24px; max-width: 16ch;
+    font-size: clamp(38px, 5.6vw, 62px); line-height: 1.05; letter-spacing: -1px;
+    margin: 0 0 18px; max-width: 27ch;
   }
   h1 em { font-style: normal; color: var(--gold); }
-  .lede { font-size: clamp(19px, 2.4vw, 23px); color: var(--sage); max-width: 46ch; margin: 0 0 32px; }
+  .lede { font-size: clamp(18px, 2vw, 21px); color: var(--sage); max-width: 64ch; margin: 0 0 22px; }
   .lede b { color: var(--cream); font-weight: 600; }
 
   .install {
     background: var(--code-bg); border-radius: 16px; padding: 20px 24px;
     font-family: var(--mono); font-size: 17px; line-height: 1.8;
-    overflow-x: auto; max-width: 720px;
+    overflow-x: auto; padding-right: 104px;
   }
+  .cmd { position: relative; max-width: 720px; }
+  .cmd .copy {
+    position: absolute; top: 14px; right: 14px;
+    font: 700 14px/1 var(--sans); padding: 9px 14px; border-radius: 999px; cursor: pointer;
+    background: var(--felt-2); color: var(--cream); border: 1px solid var(--line);
+  }
+  .cmd .copy:hover, .cmd .copy:focus-visible { border-color: var(--gold); }
   .install div { white-space: pre; }
   .install .p { color: #4fc285; user-select: none; }
   .install .c { color: #8fa89b; }
   .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
   .btn {
     display: inline-block; padding: 12px 22px; border-radius: 999px; font-weight: 700;
-    text-decoration: none; font-size: 17px;
+    text-decoration: none; font-size: 17px; font-family: var(--sans); border: 0; cursor: pointer;
   }
+  .btn.small { padding: 8px 16px; font-size: 15px; }
+  .top nav .btn.primary { color: var(--ink); }
+  .top nav { align-items: center; }
+  .hero-ticket { margin: 28px 0 0; }
+  .hero .source { font-size: 16px; color: var(--sage); margin: 12px 0 0; }
+  .hero-ticket figcaption { color: var(--sage); font-size: 16px; margin-top: 4px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* faq */
+  .faq details { border-bottom: 1px solid var(--line); padding-top: 16px; padding-bottom: 16px; }
+  .faq summary { cursor: pointer; font-weight: 700; font-size: 19px; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; color: var(--gold); font-size: 24px; line-height: 1; }
+  .faq details[open] summary::after { content: "−"; }
+  .faq details p { color: var(--sage); margin: 10px 0 0; max-width: 70ch; }
+  .final { text-align: left; }
+  .final .cmd { margin-top: 8px; }
   .btn.primary { background: var(--gold); color: var(--ink); }
   .btn.primary:hover { background: var(--cream); color: var(--ink); }
   .btn.ghost { border: 1.5px solid var(--sage); color: var(--cream); }
   .btn.ghost:hover { border-color: var(--cream); }
 
   /* sections */
-  section { padding-block: clamp(40px, 6vw, 64px); border-top: 1px solid var(--line); }
+  section { padding-top: 56px; padding-bottom: 56px; border-top: 1px solid var(--line); }
+  @media (max-width: 560px) { section { padding-top: 40px; padding-bottom: 40px; } }
   .eyebrow {
     font-size: 14px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
     color: var(--gold); margin: 0 0 10px;
@@ -123,8 +148,8 @@
     display: flex; align-items: center; justify-content: center;
   }
   .slip .stub span { transform: rotate(-90deg); white-space: nowrap; font-weight: 700; letter-spacing: 3px; font-size: 15px; }
-  .slip h3 { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
-  .slip h3 small { font-weight: 400; color: var(--muted-ink); font-size: 15px; }
+  .slip .slip-title { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 0 0 10px; font-size: 21px; font-weight: 700; line-height: 1.3; }
+  .slip .slip-title small { font-weight: 400; color: var(--muted-ink); font-size: 15px; }
   .table-scroll { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 15px; }
   th {
@@ -133,7 +158,7 @@
   }
   td { white-space: nowrap; padding: 10px 10px 10px 0; border-bottom: 1px solid #e3d9c3; }
   tr:last-child td { border-bottom: 0; }
-  .chip { display: inline-block; padding: 2px 11px; border-radius: 999px; font-size: 14px; font-weight: 700; color: #fff; }
+  .chip { display: inline-block; padding: 5px 12px; border-radius: 999px; font-size: 14px; line-height: 1.2; font-weight: 700; color: #fff; }
   .chip.no { background: var(--miss-ink); }
   .chip.users { background: var(--met-ink); }
   .chip.frame { background: var(--open-ink); }
@@ -176,6 +201,8 @@
     dl.skills dd { margin-bottom: 12px; }
     .slip { padding-left: 64px; }
     .slip .stub { width: 44px; }
+    .install { padding-right: 24px; }
+    .cmd .copy { position: static; margin-top: 10px; }
   }
 
   footer { border-top: 1px solid var(--line); padding-block: 32px 48px; color: var(--sage); font-size: 16px; }
@@ -205,24 +232,42 @@
     <nav aria-label="Page">
       <a href="#bet">How a bet works</a>
       <a href="#register">Register</a>
-      <a href="#install">Install</a>
+      <a href="#faq">FAQ</a>
       <a href="https://github.com/niccolox/devekko.bookie">GitHub</a>
+      <a class="btn primary small" href="#install">Install</a>
     </nav>
   </header>
 
   <main>
     <div class="hero">
-      <h1>Set the kill criteria before your agent writes <em>line one.</em></h1>
-      <p class="lede">Five Agent Skills for Claude Code and other coding agents. Bookie runs each product idea as a bet: <b>fixed terms, a thin build, real users,</b> and a <b>go, no-go, or pivot</b> call on a date you pick first.</p>
-      <div class="install" aria-label="Install commands">
-        <div><span class="p">$ </span>npx skills add niccolox/devekko.bookie</div>
-        <div><span class="p">&gt; </span>/setup-bookie   <span class="c"># once for each project</span></div>
-        <div><span class="p">&gt; </span>/bookie         <span class="c"># start your first bet</span></div>
-      </div>
-      <div class="cta">
-        <a class="btn primary" href="#install">Install bookie</a>
-        <a class="btn ghost" href="https://github.com/niccolox/devekko.bookie">View on GitHub</a>
-      </div>
+      <h1>Set the no-go criteria before your agent writes <em>line one.</em></h1>
+      <p class="lede">Bookie runs each product idea as a bet in Claude Code or another coding agent: <b>fixed terms, a thin build, real users,</b> and a <b>go, no-go, or pivot</b> call on a date you pick first.</p>
+        <div class="cmd">
+          <div class="install" aria-label="Install commands">
+            <div><span class="p">$ </span>npx skills add niccolox/devekko.bookie</div>
+            <div><span class="p">&gt; </span>/setup-bookie   <span class="c"># once for each project</span></div>
+            <div><span class="p">&gt; </span>/bookie         <span class="c"># start your first bet</span></div>
+          </div>
+          <button class="copy" type="button" data-copy="npx skills add niccolox/devekko.bookie">Copy install</button>
+        </div>
+      <p class="source">Then type two commands in your agent. <a href="https://github.com/niccolox/devekko.bookie">Read the source on GitHub</a></p>
+      <figure class="hero-ticket">
+        <div class="slip">
+          <div class="stub" aria-hidden="true"><span class="mono">BOOKIE.md</span></div>
+          <p class="slip-title">The register at the root of your repo <small>Bookie writes it after each stage</small></p>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Bet</th><th>Name</th><th>Status</th><th>Stage</th><th>Decision date</th><th>Criteria</th><th>Updated</th></tr></thead>
+              <tbody>
+                <tr><td class="mono">❌ BET-001</td><td>Invoice match</td><td><span class="chip no">Decided: no-go</span></td><td>🏁 finished</td><td class="mono">2026-09-30</td><td class="score"><span class="m">1 met</span>, <span class="x">3 not met</span></td><td class="mono">2026-09-30</td></tr>
+                <tr><td class="mono">🧪 BET-002</td><td>Weekly cash report</td><td><span class="chip users">With users</span></td><td>🔁 iterate (9 of 11)</td><td class="mono">2026-12-04</td><td class="score"><span class="m">2 met</span>, <span class="o">2 open</span></td><td class="mono">2026-11-16</td></tr>
+                <tr><td class="mono">📝 BET-003</td><td>Supplier risk alerts</td><td><span class="chip frame">Framing</span></td><td>📝 frame (2 of 11)</td><td class="mono"></td><td class="score"><span class="o">none</span></td><td class="mono">2026-11-17</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <figcaption>Your <code>BOOKIE.md</code> after three bets. <a href="#register">How to read it</a></figcaption>
+      </figure>
     </div>
 
     <section aria-labelledby="problem">
@@ -240,7 +285,7 @@
       <h2 id="bet-h">The terms come first, and they do not move.</h2>
       <p class="narrow muted">A bookie writes the terms down before the game and pays out on the final score. Bookie does that for a product idea.</p>
       <div class="grid two">
-        <div class="card"><span class="emoji" aria-hidden="true">📝</span><h3>Terms first</h3><p>Before the first line of code, you write a core question, 3 to 6 kill criteria, and a decision date. Each criterion has a number and names its evidence.</p></div>
+        <div class="card"><span class="emoji" aria-hidden="true">📝</span><h3>Terms first</h3><p>Before the first line of code, you write a core question, 3 to 6 no-go criteria, and a decision date. Each criterion has a number and names its evidence.</p></div>
         <div class="card"><span class="emoji" aria-hidden="true">🔒</span><h3>Terms stay put</h3><p>After the frame stage, no agent changes a criterion, a threshold, or the date. Only you can, and the record shows the change.</p></div>
         <div class="card"><span class="emoji" aria-hidden="true">👀</span><h3>Only acts count</h3><p>The Customer evidence table logs only what a person did: a second login, a payment, a cancellation. A compliment goes nowhere.</p></div>
         <div class="card"><span class="emoji" aria-hidden="true">⚖️</span><h3>Settled on the date</h3><p>At the score stage, the agent runs the evidence commands again and marks each criterion met or not met. You write the memo and make the call.</p></div>
@@ -251,22 +296,7 @@
     <section id="register" aria-labelledby="register-h">
       <p class="eyebrow">📒 The register</p>
       <h2 id="register-h">Every bet in one table.</h2>
-      <p class="narrow muted">Every bet lives in <code>BOOKIE.md</code> at the root of your repo. Bookie writes it again after each stage. Here it is with three bets, with emoji added on this page to show the state.</p>
-
-      <div class="slip">
-        <div class="stub" aria-hidden="true"><span class="mono">BOOKIE.md</span></div>
-        <h3>The register at the root of your repo <small>Bookie writes it after each stage</small></h3>
-        <div class="table-scroll">
-          <table>
-            <thead><tr><th>Bet</th><th>Name</th><th>Status</th><th>Stage</th><th>Decision date</th><th>Criteria</th><th>Updated</th></tr></thead>
-            <tbody>
-              <tr><td class="mono">❌ BET-001</td><td>Invoice match</td><td><span class="chip no">Decided: no-go</span></td><td>🏁 finished</td><td class="mono">2026-09-30</td><td class="score"><span class="m">1 met</span>, <span class="x">3 not met</span></td><td class="mono">2026-09-30</td></tr>
-              <tr><td class="mono">🧪 BET-002</td><td>Weekly cash report</td><td><span class="chip users">With users</span></td><td>🔁 iterate (9 of 11)</td><td class="mono">2026-12-04</td><td class="score"><span class="m">2 met</span>, <span class="o">2 open</span></td><td class="mono">2026-11-16</td></tr>
-              <tr><td class="mono">📝 BET-003</td><td>Supplier risk alerts</td><td><span class="chip frame">Framing</span></td><td>📝 frame (2 of 11)</td><td class="mono"></td><td class="score"><span class="o">none</span></td><td class="mono">2026-11-17</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <p class="narrow muted">The ticket at the top of this page is <code>BOOKIE.md</code>, the register at the root of your repo. Bookie writes it again after each stage. This page adds emoji to show the state of each bet.</p>
 
       <h3>How to read it</h3>
       <ul class="read">
@@ -289,7 +319,7 @@
       <p class="narrow muted">The Stage column of the register shows where each bet is in these eleven stages. Each stage must pass its gate before the next one starts.</p>
       <ol class="stages">
         <li><b class="n">1</b><strong>🏗️ setup</strong><span class="d">Writes AGENTS.md, CLAUDE.md, PRODUCTS.md, DESIGN.md, and the register.</span></li>
-        <li class="gate"><b class="n">2</b><strong>📝 frame</strong><span class="d">Core question, kill criteria, and decision date. You confirm them.</span></li>
+        <li class="gate"><b class="n">2</b><strong>📝 frame</strong><span class="d">Core question, no-go criteria, and decision date. You confirm them.</span></li>
         <li><b class="n">3</b><strong>🛒 build-or-buy</strong><span class="d">At most one hour to find what already solves the problem.</span></li>
         <li><b class="n">4</b><strong>🎯 scope</strong><span class="d">20 to 50 real examples and one success metric.</span></li>
         <li><b class="n">5</b><strong>🧪 evals</strong><span class="d">An eval set with yes/no checks and a judge rubric.</span></li>
@@ -322,7 +352,7 @@
       <p class="narrow muted">You need Node.js for <code>npx</code>, <code>git</code>, and Python 3.11 or later.</p>
       <ol class="steps narrow">
         <li><b>Install the skills</b> from the root of your project. Select all five skills, then your agents.
-          <div class="install"><div><span class="p">$ </span>npx skills add niccolox/devekko.bookie</div></div>
+          <div class="cmd"><div class="install"><div><span class="p">$ </span>npx skills add niccolox/devekko.bookie</div></div><button class="copy" type="button" data-copy="npx skills add niccolox/devekko.bookie">Copy</button></div>
         </li>
         <li><b>Set up the project.</b> Start your agent and type the command. It adds pstack when it is missing, writes the project files, and makes one commit.
           <div class="install"><div><span class="p">&gt; </span>/setup-bookie</div></div>
@@ -340,10 +370,36 @@
       <dl class="skills">
         <dt>/setup-bookie</dt><dd>Sets up a project in one pass: pstack, model settings, project files, .gitignore, and a commit.</dd>
         <dt>/bookie</dt><dd>Runs one bet from setup to the memo.</dd>
-        <dt>/bet-record</dt><dd>Keeps the bet record: core question, kill criteria, decision date, build log, score, and memo.</dd>
+        <dt>/bet-record</dt><dd>Keeps the bet record: core question, no-go criteria, decision date, build log, score, and memo.</dd>
         <dt>/bet-diligence</dt><dd>Writes a diligence memo on a dependency, product, or company, with evidence for each finding.</dd>
         <dt>/bet-discovery</dt><dd>Plans customer interviews and logs only what people did.</dd>
       </dl>
+    </section>
+    <section id="faq" class="faq" aria-labelledby="faq-h">
+      <p class="eyebrow">❓ Questions</p>
+      <h2 id="faq-h">Before you install.</h2>
+      <div>
+        <details><summary>Which agents does it work with?</summary><p>Bookie is built and tested with Claude Code. The skills use the Agent Skills format, so the <code>skills</code> CLI can install them for other agents too. Each bet skill starts only from a slash command that you type.</p></details>
+        <details><summary>What does it change in my repo?</summary><p><code>/setup-bookie</code> writes <code>AGENTS.md</code>, <code>CLAUDE.md</code>, <code>PRODUCTS.md</code>, <code>DESIGN.md</code>, <code>.gitignore</code>, and <code>BOOKIE.md</code>, then makes one commit on the branch <code>setup/bookie</code>. A file that exists keeps its text and gets only its missing lines. Nothing is pushed.</p></details>
+        <details><summary>Do I need an account or an API key?</summary><p>Not for Bookie. The skills run inside the agent that you already use. The scripts need only Python 3.11 or later and its standard library.</p></details>
+        <details><summary>Can I use it on a project that already exists?</summary><p>Yes. Bookie adds only what is missing. For a bet that started before Bookie, it marks the finished stages done with the evidence that exists, and it does not repeat finished work.</p></details>
+        <details><summary>Can I score a bet before its decision date?</summary><p>Yes, with a written reason. No agent can move the date or change a no-go criterion after the frame stage. Only you can, and the record shows the change.</p></details>
+        <details><summary>What does a no-go cost me?</summary><p>The weeks up to the decision date, which you set 2 to 4 weeks after the build starts. The bet stays in the register, so your next idea starts with a record of what failed.</p></details>
+      </div>
+    </section>
+
+    <section class="final" aria-labelledby="final-h">
+      <p class="eyebrow">🏁 Your next idea</p>
+      <h2 id="final-h">Write the terms first. Then let your agent build.</h2>
+      <p class="narrow muted">Three commands from install to your first bet. Bookie asks for one paragraph about the problem, then runs the stages in order.</p>
+      <div class="cmd">
+          <div class="install" aria-label="Install commands">
+            <div><span class="p">$ </span>npx skills add niccolox/devekko.bookie</div>
+            <div><span class="p">&gt; </span>/setup-bookie   <span class="c"># once for each project</span></div>
+            <div><span class="p">&gt; </span>/bookie         <span class="c"># start your first bet</span></div>
+          </div>
+          <button class="copy" type="button" data-copy="npx skills add niccolox/devekko.bookie">Copy</button>
+        </div>
     </section>
   </main>
 </div>
@@ -355,5 +411,27 @@
   </div>
 </footer>
 
+<p id="copy-status" class="sr-only" aria-live="polite"></p>
+<script>
+  document.querySelectorAll("[data-copy]").forEach(function (button) {
+    button.addEventListener("click", async function () {
+      var text = button.getAttribute("data-copy");
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (error) {
+        var area = document.createElement("textarea");
+        area.value = text;
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand("copy");
+        area.remove();
+      }
+      var label = button.textContent;
+      button.textContent = "Copied ✓";
+      document.getElementById("copy-status").textContent = "Install command copied";
+      setTimeout(function () { button.textContent = label; }, 2000);
+    });
+  });
+</script>
 </body>
 </html>
