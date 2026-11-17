@@ -13,7 +13,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+# The skills CLI can install one skill as a folder and another as a link. Look for the
+# skill beside this one in the folder that holds the real file, and first in the folder
+# that the command names, where each installed skill is a folder or a link.
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "bet-record" / "scripts"))
+sys.path.insert(0, str(Path(__file__).absolute().parents[2] / "bet-record" / "scripts"))
 
 from bet_dialog import MAX_QUESTIONS, Question, frame_questions, memo_questions
 from check_bet import DATE, RESULTS, Bet, check_file, first_word_value, parse, strip_fences, table

@@ -31,14 +31,16 @@ Written on 2026-11-17, when the skills moved here from the saasx2x project. Chan
 
 ## What was verified on 2026-11-17
 
-- `make check` on Python 3.11: lint, types, and 90 tests passed. Six tests cover the pstack sync, with a local repository as the upstream. Four cover the install script. Two cover the pstack check of `setup-bookie`, and two check that the sources and the skill names agree. Nine cover the register, and two cover the order of the bet steps in `AGENTS.md`.
+- `make check` on Python 3.11: lint, types, and 91 tests passed. Six tests cover the pstack sync, with a local repository as the upstream. Four cover the install script. Two cover the pstack check of `setup-bookie`, and two check that the sources and the skill names agree. Nine cover the register, and two cover the order of the bet steps in `AGENTS.md`.
 - The register from a copy of a real bet record showed the correct row: the status word only, the decision date, and `5 open`. That record is in `.local/`, and the script added `BOOKIE.md` to `.gitignore`.
 - The checker command in the generated `AGENTS.md` ran in both install layouts: `.claude/skills/` for a copy and `.agents/skills/` for links.
 - `npx skills add niccolox/devekko.bookie -l` found the five skills, with no second copy from the links in `.claude/skills/`.
 - `npx skills add niccolox/devekko.bookie --skill '*' -a claude-code -y` in an empty folder put the five skills in `.claude/skills/` and wrote `skills-lock.json` at `59c711c`. The scripts ran there.
 - With the working copy installed by `npx skills add <this folder>`: the pstack check printed `missing`, its `install` command added 58 skills, the check then printed `present`, and the setup steps made one commit on `setup/bookie` that holds `skills-lock.json`. This passed with the bet skills in `.agents/skills/` and also with the bet skills in `.claude/skills/`.
 - After the push of commit `874c337`: `npx skills add niccolox/devekko.bookie --skill '*' -a claude-code -y` in an empty folder pinned that commit in `skills-lock.json`. The pstack check printed `missing`, its `install` command added 58 skills, and the check then printed `present`.
-- `npx skills update -y` in a project with both sources fetched 2 sources and reported that all skills were up to date. An update after a real change was not tested.
+- `npx skills update -y` in a project with both sources fetched 2 sources and reported that all skills were up to date.
+- After the push of commit `a1d70ff`: `npx skills update -y` in a project installed at `874c337` updated `bet-record`, `bookie`, and `setup-bookie`, and left the other 60 skills. The lock file then named `a1d70ff` for those three. The installed `bookie` was the same as the source.
+- That update moved the three updated skills from real folders in `.claude/skills/` to `.agents/skills/` with links, because the project was installed with `-a claude-code`. An update that moves only one of two skills that work together broke the import between them. `tests/test_layouts.py` now runs both entry scripts in all 8 mixes of folders and links. 4 mixes failed before the fix, and all 8 pass now.
 - `make pstack` pulled 58 skills on the first run. A second run reported `current` and did not rewrite the local copy.
 - `make bookie REPO=<an empty folder>` installed 58 pstack skills, the 5 bet skills, and 2 agent definitions.
 - `make sandbox NAME=demo` created a project with 63 skills and its own git repository. This repository stayed on `main` with no change.

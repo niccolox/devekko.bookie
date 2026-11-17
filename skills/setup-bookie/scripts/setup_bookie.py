@@ -8,7 +8,9 @@ import json
 import sys
 from pathlib import Path
 
+# See the note at the same lines in bookie.py: look in both skill folders.
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "bookie" / "scripts"))
+sys.path.insert(0, str(Path(__file__).absolute().parents[2] / "bookie" / "scripts"))
 
 from bookie import update_register
 from persist import commit

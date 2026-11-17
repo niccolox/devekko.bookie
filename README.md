@@ -51,7 +51,7 @@ You need Node.js for `npx`, `git`, and Python 3.11 or later.
 | `.agents/skills/<name>/` | Present when the CLI installs for several agents. It then holds the files, and `.claude/skills/<name>` is a link to them. |
 | `skills-lock.json` | The source and the commit of each skill. Commit this file. |
 
-The bet skills and pstack can be in different layouts in one project. `/setup-bookie` finds pstack in both.
+The skills can be in different layouts in one project. An update can also move a skill from a folder to a link. The scripts find the skills beside them in every mix of the two.
 
 ### Update
 
