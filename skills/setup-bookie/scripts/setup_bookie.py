@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Set up a project for bookie: project files, .gitignore, the setup-pstack override, a commit."""
+"""Set up a project for bookie: pstack, project files, the setup-pstack override, a commit."""
 
 from __future__ import annotations
 
@@ -17,6 +17,47 @@ SETTINGS = Path(".claude") / "settings.json"
 OVERRIDDEN = "setup-pstack"
 BRANCH = "setup/bookie"
 MESSAGE = "chore: set up pstack models and bookie project files"
+
+PSTACK_SOURCE = "backnotprop/pstack"
+PSTACK_INSTALL = f"npx -y skills add {PSTACK_SOURCE} --skill '*' -y"
+PSTACK_UPDATE = "npx -y skills update -y"
+# The pstack skills that the bet skills name. The install command adds all of pstack.
+PSTACK_SKILLS = (
+    "setup-pstack",
+    "poteto-mode",
+    "principle-prove-it-works",
+    "show-me-your-work",
+    "technical-writing",
+    "unslop",
+    "how",
+    "blast-radius",
+)
+
+
+def skill_folders() -> list[Path]:
+    """The folders that can hold the skills beside this one.
+
+    The skills CLI can install a skill as a link, so the folder that the command names
+    and the folder that holds the real file can differ. Look in both.
+    """
+    here = Path(__file__)
+    return list(dict.fromkeys([here.absolute().parents[2], here.resolve().parents[2]]))
+
+
+def pstack(folders: list[Path]) -> dict[str, object]:
+    """Say whether the pstack skills are installed, and how to install them."""
+    missing = [
+        name
+        for name in PSTACK_SKILLS
+        if not any((folder / name / "SKILL.md").exists() for folder in folders)
+    ]
+    return {
+        "state": "missing" if missing else "present",
+        "missing": missing,
+        "source": PSTACK_SOURCE,
+        "install": PSTACK_INSTALL,
+        "update": PSTACK_UPDATE,
+    }
 
 
 def turn_off_setup_pstack(root: Path) -> str:
@@ -45,13 +86,17 @@ def project(root: Path, record: Path, stack: str, surface: str) -> dict[str, str
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("questions", "project", "check", "commit"))
+    parser.add_argument("command", choices=("pstack", "questions", "project", "check", "commit"))
     parser.add_argument("--root", type=Path, default=Path("."))
     parser.add_argument("--record", type=Path, default=Path("docs/bet-process.md"))
     parser.add_argument("--stack", choices=sorted(STACKS))
     parser.add_argument("--surface", choices=sorted(SURFACES))
     args = parser.parse_args(argv)
     record = args.record if args.record.is_absolute() else args.root / args.record
+    if args.command == "pstack":
+        result = pstack(skill_folders())
+        print(json.dumps(result, indent=1))
+        return 1 if result["missing"] else 0
     if args.command == "questions":
         print(json.dumps([{"questions": setup_questions()}], indent=1))
     elif args.command == "project":

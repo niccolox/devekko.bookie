@@ -12,20 +12,20 @@ dev = ["pytest>=8", "ruff>=0.8", "pyright>=1.1.390"]
 package = false
 
 [tool.pytest.ini_options]
-testpaths = ["skills"]
+testpaths = ["skills", "tests"]
 addopts = "-q -p no:cacheprovider"
 
 [tool.ruff]
 line-length = 100
 target-version = "py311"
-extend-exclude = ["sandbox"]
+extend-exclude = ["sandbox", "vendor"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "C4", "EXE", "FURB", "RUF"]
 
 [tool.pyright]
-include = ["skills"]
-exclude = ["sandbox", ".venv", "**/__pycache__"]
+include = ["skills", "scripts", "tests"]
+exclude = ["sandbox", "vendor", ".venv", "**/__pycache__"]
 typeCheckingMode = "standard"
 pythonVersion = "3.11"
 extraPaths = [
@@ -33,4 +33,5 @@ extraPaths = [
   "skills/bet-diligence/scripts",
   "skills/bookie/scripts",
   "skills/setup-bookie/scripts",
+  "scripts",
 ]

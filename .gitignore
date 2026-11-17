@@ -5,6 +5,16 @@
 # Test projects that `make sandbox` creates
 sandbox/
 
+# The upstream pstack skills, pulled by `make pstack`. pstack.lock records their hash.
+vendor/
+# Links to the upstream skills. Add a line here for each new skill in skills/.
+.claude/skills/*
+!.claude/skills/bookie
+!.claude/skills/setup-bookie
+!.claude/skills/bet-record
+!.claude/skills/bet-diligence
+!.claude/skills/bet-discovery
+
 # Secrets
 .env
 .env.*

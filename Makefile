@@ -1,9 +1,9 @@
 .DEFAULT_GOAL := help
-SCRIPTS := skills/bet-record/scripts skills/bet-diligence/scripts skills/bookie/scripts skills/setup-bookie/scripts
+SCRIPTS := skills/bet-record/scripts skills/bet-diligence/scripts skills/bookie/scripts skills/setup-bookie/scripts scripts tests
 NAME ?= demo
 FORK ?= ../pstack-bets
 
-.PHONY: help install test lint format types check sandbox sandbox-clean fork-diff fork-copy
+.PHONY: help install test lint format types check pstack pstack-check bookie sandbox sandbox-clean fork-diff fork-copy
 
 help: ## Show this list
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F ':.*## ' '{printf "  %-14s %s\n", $$1, $$2}'
@@ -27,8 +27,18 @@ types: ## Check the types of the scripts
 
 check: lint types test ## Run lint, types, and tests
 
+pstack: ## Pull the upstream pstack skills when their hash on GitHub changed
+	python3 scripts/pstack_sync.py sync
+
+pstack-check: ## Compare the local pstack hash with GitHub, and pull nothing
+	python3 scripts/pstack_sync.py check
+
+bookie: ## Install bookie and pstack into a project: make bookie REPO=../my-project
+	@test -n "$(REPO)" || { echo "Give the project folder: make bookie REPO=../my-project"; exit 1; }
+	scripts/install.sh $(REPO)
+
 sandbox: ## Create a test project: make sandbox NAME=demo
-	scripts/sandbox.sh $(NAME) $(FORK)
+	scripts/sandbox.sh $(NAME)
 
 sandbox-clean: ## Remove every test project
 	rm -rf sandbox

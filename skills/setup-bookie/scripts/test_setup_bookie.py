@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from setup_bookie import main, project, turn_off_setup_pstack
+from setup_bookie import PSTACK_SKILLS, main, project, pstack, turn_off_setup_pstack
 
 for key in ("GIT_AUTHOR", "GIT_COMMITTER"):
     os.environ[f"{key}_NAME"] = "Setup Test"
@@ -73,6 +73,24 @@ class SetupBookieTest(unittest.TestCase):
         for name in ("AGENTS.md", "CLAUDE.md", "PRODUCTS.md", "DESIGN.md", ".gitignore"):
             self.assertIn(name, files)
         self.assertIn(".claude/settings.json", files)
+
+    def add_skills(self, folder, names):
+        for name in names:
+            (folder / name).mkdir(parents=True)
+            (folder / name / "SKILL.md").write_text(name)
+
+    def test_missing_pstack_is_reported_with_the_command_that_installs_it(self):
+        self.add_skills(self.root / "a", PSTACK_SKILLS[:2])
+        result = pstack([self.root / "a"])
+        self.assertEqual(result["state"], "missing")
+        self.assertEqual(result["missing"], list(PSTACK_SKILLS[2:]))
+        self.assertEqual(result["install"], "npx -y skills add backnotprop/pstack --skill '*' -y")
+
+    def test_pstack_counts_as_present_in_either_skill_folder(self):
+        self.add_skills(self.root / "linked", PSTACK_SKILLS[:3])
+        self.add_skills(self.root / "real", PSTACK_SKILLS[3:])
+        result = pstack([self.root / "linked", self.root / "real"])
+        self.assertEqual((result["state"], result["missing"]), ("present", []))
 
     def test_questions_fit_the_question_tool(self):
         with contextlib.redirect_stdout(io.StringIO()) as out:
