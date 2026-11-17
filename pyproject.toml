@@ -1,0 +1,36 @@
+[project]
+name = "devekko-bookie"
+version = "0.1.0"
+description = "Development repository for the bookie and bet skills"
+requires-python = ">=3.11"
+dependencies = []
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.8", "pyright>=1.1.390"]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["skills"]
+addopts = "-q -p no:cacheprovider"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["sandbox"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "C4", "EXE", "FURB", "RUF"]
+
+[tool.pyright]
+include = ["skills"]
+exclude = ["sandbox", ".venv", "**/__pycache__"]
+typeCheckingMode = "standard"
+pythonVersion = "3.11"
+extraPaths = [
+  "skills/bet-record/scripts",
+  "skills/bet-diligence/scripts",
+  "skills/bookie/scripts",
+  "skills/setup-bookie/scripts",
+]

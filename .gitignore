@@ -1,0 +1,25 @@
+# Private notes, saved prompts, and decision trails
+.local/
+.audit/
+
+# Test projects that `make sandbox` creates
+sandbox/
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Editors and systems
+.DS_Store
+.idea/
+.vscode/
