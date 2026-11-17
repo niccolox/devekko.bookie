@@ -51,7 +51,7 @@ Do not do steps 7 and 8 here. Bookie's gates and the build stage cover verificat
    python3 <scripts>/setup_bookie.py project --stack <answer> --surface <answer> --record <path>
    ```
 
-   The script writes `AGENTS.md`, `CLAUDE.md`, `PRODUCTS.md`, `DESIGN.md`, and `.gitignore` from the **bookie** templates, and adds `"setup-pstack": "off"` to `.claude/settings.json`. It never replaces a file. An existing file gets only its missing lines, as the **Project files** section of [`../bookie/SKILL.md`](../bookie/SKILL.md) says.
+   The script writes `AGENTS.md`, `CLAUDE.md`, `PRODUCTS.md`, `DESIGN.md`, and `.gitignore` from the **bookie** templates, and adds `"setup-pstack": "off"` to `.claude/settings.json`. It also writes `BOOKIE.md`, the register of the bets, which has no bets at first. `AGENTS.md` tells each agent to do the bet steps before `/poteto-mode`. It never replaces a file. An existing file gets only its missing lines, as the **Project files** section of [`../bookie/SKILL.md`](../bookie/SKILL.md) says.
 
 3. Add one line to `CLAUDE.md` that names the model settings file from step 2, for example: "The pstack model settings are in `.claude/rules/pstack-models.md`. Read them from this project, not from the home folder."
 
@@ -78,6 +78,7 @@ Tell the operator:
 - Whether pstack was present or installed, with its source.
 - The model settings file and the budget.
 - Each project file and what happened to it: created, lines added, or kept.
+- That `BOOKIE.md` is the register of the bets, and that bookie writes it again after each stage.
 - That `/setup-pstack` is off in this project, and that `/setup-bookie` changes the models from now on.
 - The commit and its branch.
 - The next step: `/bookie` starts the first bet.

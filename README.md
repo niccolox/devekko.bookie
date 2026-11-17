@@ -32,7 +32,7 @@ You need Node.js for `npx`, `git`, and Python 3.11 or later.
 
    - **Pstack.** It checks that the project has the pstack skills. When they are missing, it installs them from `backnotprop/pstack` with the same `skills` CLI.
    - **Models.** It picks the pstack models and writes them into the project.
-   - **Project files.** It asks for the stack and the surface. Then it writes `AGENTS.md`, `CLAUDE.md`, `PRODUCTS.md`, `DESIGN.md`, and `.gitignore`. A file that exists keeps its text and gets only its missing lines.
+   - **Project files.** It asks for the stack and the surface. Then it writes `AGENTS.md`, `CLAUDE.md`, `PRODUCTS.md`, `DESIGN.md`, and `.gitignore`. A file that exists keeps its text and gets only its missing lines. It also writes `BOOKIE.md`, the register of the bets.
    - **Commit.** It turns `/setup-pstack` off for the project and makes one commit on the branch `setup/bookie`. In a folder with no git repository, it runs `git init` first. It never pushes.
 
 3. Start the first bet:
@@ -73,6 +73,8 @@ npx skills add backnotprop/pstack --skill '*' -y
 
 - **It runs eleven stages:** setup, frame, build-or-buy, scope, evals, build, harden, users, iterate, score, memo. Each stage must pass a gate before the next stage starts.
 - **It asks you each product call** through the question tool: the kill criteria, the decision date, the scope, the human step, and the decision.
+- **It keeps a register.** `BOOKIE.md` at the project root has one row for each bet: its name, status, stage, decision date, and criteria results. Bookie writes it again after each stage. When git ignores the bet record, git also ignores `BOOKIE.md`.
+- **It puts the bet before the build.** `AGENTS.md` tells each agent to read `BOOKIE.md` and run the record checker before a task. An agent writes no code for a bet that is not framed or is not yet at the build stage. `/poteto-mode` starts after those steps.
 - **It commits.** Each finished or skipped stage is one local commit, `bookie(BET-NNN): <stage> done`, on the branch `bet/bet-nnn`. Files named like secrets stay out of the commit. It never pushes.
 - **It saves prompts.** Each filled prompt goes to `.local/bookie/BET-NNN/prompts/`, which git ignores.
 

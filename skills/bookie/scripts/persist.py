@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import os
 import re
 import subprocess
 from pathlib import Path
@@ -24,6 +25,22 @@ def ensure_ignored(root: Path) -> None:
     lines = ignore.read_text(encoding="utf-8").splitlines() if ignore.exists() else []
     if not {f"{LOCAL}/", LOCAL, f"/{LOCAL}/", f"/{LOCAL}"} & {line.strip() for line in lines}:
         ignore.write_text("\n".join([*lines, f"{LOCAL}/"]) + "\n", encoding="utf-8")
+
+
+def ignore(root: Path, line: str) -> None:
+    """Add one line to .gitignore when it is not there."""
+    path = root / ".gitignore"
+    lines = path.read_text(encoding="utf-8").splitlines() if path.exists() else []
+    if line not in {existing.strip() for existing in lines}:
+        path.write_text("\n".join([*lines, line]) + "\n", encoding="utf-8")
+
+
+def is_private(root: Path, path: Path) -> bool:
+    """Say whether git keeps this path out of commits: it is in .local, or git ignores it."""
+    relative = os.path.relpath(path.resolve(), root.resolve())
+    if Path(relative).parts[0] == LOCAL:
+        return True
+    return git(root, "check-ignore", "-q", "--", relative, check=False).returncode == 0
 
 
 def save_prompt(

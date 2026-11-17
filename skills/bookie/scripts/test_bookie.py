@@ -17,8 +17,9 @@ from bookie import (
     run_scaffold,
     save_progress,
     status,
+    update_register,
 )
-from scaffold import FILES, TEMPLATES
+from scaffold import FILES, TEMPLATES, skills_folder
 
 TODAY = dt.date(2026, 11, 17)
 
@@ -198,7 +199,7 @@ class BookieTest(unittest.TestCase):
         save_progress(self.record, "BET-001", {s.name: {"status": "done"} for s in STAGES[:9]})
         with self.assertRaisesRegex(SystemExit, "still open: 1"):
             self.advance("score")
-        self.write(result="met")
+        self.write(result="Met")
         self.advance("score")
         with self.assertRaisesRegex(SystemExit, "not Decided"):
             self.advance("memo")
@@ -250,6 +251,23 @@ class SetupTest(unittest.TestCase):
         self.assertIn("@AGENTS.md", (self.root / "CLAUDE.md").read_text())
         self.assertIn("A web UI.", (self.root / "DESIGN.md").read_text())
         self.assertNotIn("{{project}}", agents)
+
+    def test_agents_file_puts_the_bet_steps_before_poteto_mode(self):
+        self.scaffold()
+        agents = (self.root / "AGENTS.md").read_text()
+        bet, build = agents.index("### 1. The bet"), agents.index("### 2. The build")
+        self.assertLess(bet, build)
+        self.assertLess(build, agents.index("Start `/poteto-mode` with the task"))
+        self.assertIn("[BOOKIE.md](BOOKIE.md)", agents[:bet])
+        checker = "python3 .claude/skills/bet-record/scripts/check_bet.py docs/bet-process.md"
+        self.assertIn(checker, agents[bet:build])
+        self.assertNotIn("{{skills}}", agents)
+
+    def test_the_skill_folder_comes_from_where_the_skills_are_installed(self):
+        self.assertEqual(
+            skills_folder(self.root, self.root / ".agents" / "skills"), ".agents/skills"
+        )
+        self.assertEqual(skills_folder(self.root, Path("/elsewhere/skills")), ".claude/skills")
 
     def test_the_gate_fails_until_every_todo_is_filled(self):
         self.scaffold()
@@ -367,6 +385,108 @@ class PersistTest(unittest.TestCase):
             git(self.root, "log", "-1", "--format=%s"), "bookie(BET-001): build-or-buy skipped"
         )
         self.assertIsNotNone(result["commit"])
+
+
+class RegisterTest(unittest.TestCase):
+    def setUp(self):
+        self.folder = tempfile.TemporaryDirectory()
+        self.root = Path(self.folder.name)
+        self.record = self.root / "docs" / "bets.md"
+        self.record.parent.mkdir()
+
+    def tearDown(self):
+        self.folder.cleanup()
+
+    def write(self, record=None, **values):
+        path = record or self.record
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(RECORD.format(**{**FRAMED, **values}), encoding="utf-8")
+
+    def register(self):
+        return (self.root / "BOOKIE.md").read_text()
+
+    def test_a_project_with_no_record_gets_a_register_with_no_bets(self):
+        self.assertEqual(update_register(self.record, self.root), "created")
+        self.assertIn("No bets yet.", self.register())
+        self.assertIn("[`docs/bets.md`](docs/bets.md)", self.register())
+
+    def test_the_register_has_one_row_for_each_bet_with_its_stage(self):
+        second = RECORD.format(**{**FRAMED, "status": "Framing", "decision": "Open"})
+        second = second.replace("## BET-001: Monitor", "## BET-002: Price | check")
+        self.record.write_text(RECORD.format(**FRAMED) + "\n" + second, encoding="utf-8")
+        save_progress(
+            self.record,
+            "BET-001",
+            {
+                "setup": {"status": "done", "date": "2026-11-16"},
+                "frame": {"status": "done", "date": "2026-11-17"},
+            },
+        )
+        update_register(self.record, self.root)
+        text = self.register()
+        first = "| BET-001 | Monitor | Building | build-or-buy (3 of 11) | 2026-12-14 | 1 open |"
+        self.assertIn(first + " 2026-11-17 |", text)
+        self.assertIn(
+            "| BET-002 | Price \\| check | Framing | not started | Open | 1 open | - |", text
+        )
+        self.assertEqual(update_register(self.record, self.root), "kept")
+
+    def test_a_change_to_the_record_changes_the_register(self):
+        self.write()
+        update_register(self.record, self.root)
+        self.write(result="met", status="Decided: go")
+        self.assertEqual(update_register(self.record, self.root), "updated")
+        self.assertIn("| Decided: go | not started | 2026-12-14 | 1 met |", self.register())
+
+    def test_the_register_reads_the_record_as_the_checker_does(self):
+        self.write(status="Building. Slice 1 is in progress. See [the design](design/).")
+        text = self.record.read_text().replace("| open |", "| Open |")
+        self.record.write_text(
+            text.replace("**Decision date.** 2026-12-14", "**Decision date.** 2026-12-14 (fixed)")
+        )
+        update_register(self.record, self.root)
+        self.assertIn(
+            "| BET-001 | Monitor | Building | not started | 2026-12-14 | 1 open | - |",
+            self.register(),
+        )
+
+    def test_a_result_that_is_not_valid_is_counted_and_not_hidden(self):
+        self.write(result="almost")
+        update_register(self.record, self.root)
+        self.assertIn("| 1 not valid |", self.register())
+
+    def test_each_finished_stage_writes_the_register_into_its_commit(self):
+        self.write()
+        save_progress(self.record, "BET-001", {"setup": {"status": "done"}})
+        save_any_prompt(self.record, self.root, "frame")
+        result = finish(self.record, "BET-001", "frame", TODAY, root=self.root)
+        self.assertEqual(result["register"], "created")
+        self.assertIn("build-or-buy (3 of 11)", self.register())
+        self.assertIn("BOOKIE.md", git(self.root, "ls-files").split())
+
+    def test_a_record_in_local_keeps_the_register_out_of_git(self):
+        record = self.root / ".local" / "bets.md"
+        self.write(record)
+        save_progress(record, "BET-001", {"setup": {"status": "done"}})
+        save_any_prompt(record, self.root, "frame")
+        finish(record, "BET-001", "frame", TODAY, root=self.root)
+        self.assertIn("| BET-001 | Monitor |", self.register())
+        self.assertIn("BOOKIE.md", (self.root / ".gitignore").read_text().splitlines())
+        self.assertEqual(git(self.root, "ls-files").split(), [".gitignore"])
+
+    def test_a_record_that_git_ignores_keeps_the_register_out_of_git(self):
+        git(self.root, "init", "-q", "-b", "main")
+        (self.root / ".gitignore").write_text("private/\n")
+        record = self.root / "private" / "bets.md"
+        self.write(record)
+        update_register(record, self.root)
+        self.assertIn("BOOKIE.md", (self.root / ".gitignore").read_text().splitlines())
+
+    def test_a_record_in_git_keeps_the_register_in_git(self):
+        git(self.root, "init", "-q", "-b", "main")
+        self.write()
+        update_register(self.record, self.root)
+        self.assertFalse((self.root / ".gitignore").exists())
 
 
 if __name__ == "__main__":

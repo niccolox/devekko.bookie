@@ -41,7 +41,7 @@ The script prints the current stage as JSON: its goal, the skill to follow, the 
      --evidence <path from the record folder> --answer "<label>=<value>" --note "<text>"
    ```
 
-   A passed `done` makes a local git commit, `bookie(BET-NNN): <stage> done`. See **Commits**.
+   A passed `done` writes the register again and makes a local git commit, `bookie(BET-NNN): <stage> done`. See **Register** and **Commits**.
 5. If the gate fails, the script prints the reason and keeps the answers. Fix the cause and run `done` again. Ask the operator only when the fix is a product call.
 6. Run `next` again. Continue until `stage` is `null`.
 
@@ -65,14 +65,15 @@ A stage that does not apply can be skipped with `skip <stage> --note "<reason>"`
 
 ## Project files
 
-The setup stage writes four files at the project root from [`references/templates/`](references/templates/). Each one takes the parts of the practices that belong to it:
+The setup stage writes four files at the project root from [`references/templates/`](references/templates/). Each one takes the parts of the practices that belong to it. It also writes `.gitignore` and the register, `BOOKIE.md`:
 
 | File | Holds | Defaults |
 | --- | --- | --- |
-| `AGENTS.md` | The rules for every agent: how to start a task, the commands, the bet rules, the code rules, the model rules, and what needs the operator | Start with `/poteto-mode`, name the data shape first, prove it on the real artifact, and work with no credentials |
+| `AGENTS.md` | The rules for every agent: the bet steps that come before each task, then the build with `/poteto-mode`, the commands, the bet rules, the code rules, the model rules, and what needs the operator | The bet comes before the build: read `BOOKIE.md`, run the record checker, and write no code for a bet that is not framed or not yet at the build stage |
 | `CLAUDE.md` | An `@AGENTS.md` import and the rules for Claude Code only | Product calls go through `AskUserQuestion` |
 | `PRODUCTS.md` | The problem, the fit check, the people, the success metric, the scope, the human step, the unit cost, and the decision log | A person approves money, outside messages, deletes, and publishes |
 | `.gitignore` | `.local/`, `.audit/`, secrets, editor files, and the files that the stack builds | Missing lines are added; existing lines stay |
+| `BOOKIE.md` | The register of the bets. The script writes it from the record, not from a template | See **Register** |
 | `DESIGN.md` | The workflow, the data shape, the agent ladder rung, the integrations, the interface, prompts, evals, production, safety, and failure modes | Rungs 1 to 3, an eval mix of 50/30/20, 3 runs for each case, and 20 steps and 120 seconds for each run |
 
 The script never replaces a file. A file that exists keeps its text: `CLAUDE.md` gets only the `@AGENTS.md` import, and `AGENTS.md` gets only the bet record line. `PRODUCT.md` counts as `PRODUCTS.md`.
@@ -83,6 +84,20 @@ Fill each `{{TODO}}` from the operator's paragraph and the setup answers:
 - Keep the files anonymous. Write people as roles and letters, and customers as kinds of company. Never write a name, an email, a company name, or a price from a private source.
 - Keep a default unless the operator gives a reason to change it. Add that reason to the decision log in `PRODUCTS.md`.
 - Do not copy the kill criteria into these files. The record holds them.
+
+## Register
+
+`BOOKIE.md` at the project root is the register of the bets. It has one row for each bet in the record: the bet id, its name, its status, its bookie stage, its decision date, its criteria results, and the date of its last stage. `AGENTS.md` tells each agent to read it before a task.
+
+- The script writes the register. Never edit it by hand. It is written again after `scaffold`, after each `done`, and after each `skip`, so each stage commit holds the current register.
+- After a change to the record between two stages, such as a new build log row, a new status, or a criterion result, write the register again:
+
+  ```sh
+  python3 .claude/skills/bookie/scripts/bookie.py <record> BET-NNN register
+  ```
+
+- The register is as private as the record. When the record is in `.local/`, or git ignores it, the script adds `BOOKIE.md` to `.gitignore`. The names and the states of the bets then stay out of git.
+- A bet in the record that bookie has not run shows the stage `not started`.
 
 ## Pauses
 

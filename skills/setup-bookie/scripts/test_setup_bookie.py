@@ -43,6 +43,8 @@ class SetupBookieTest(unittest.TestCase):
         settings = json.loads((self.root / ".claude" / "settings.json").read_text())
         self.assertEqual(settings["skillOverrides"]["setup-pstack"], "off")
         self.assertIn("/setup-bookie", (self.root / "CLAUDE.md").read_text())
+        self.assertEqual(actions["BOOKIE.md"], "created")
+        self.assertIn("No bets yet.", (self.root / "BOOKIE.md").read_text())
 
     def test_the_override_keeps_every_other_setting(self):
         path = self.root / ".claude" / "settings.json"

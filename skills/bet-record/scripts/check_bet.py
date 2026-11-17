@@ -36,6 +36,7 @@ PLACEHOLDER = re.compile(r"<[^>]+>")
 class Bet:
     bet_id: str
     line: int
+    name: str = ""
     fields: dict[str, tuple[str, int]] = field(default_factory=dict)
     sections: dict[str, list[tuple[int, str]]] = field(default_factory=dict)
 
@@ -58,7 +59,7 @@ def parse(lines: list[tuple[int, str]]) -> list[Bet]:
     for number, text in lines:
         if text.startswith("## "):
             match = BET_HEADING.match(text)
-            current = Bet(match.group(1), number) if match else None
+            current = Bet(match.group(1), number, match.group(2).strip()) if match else None
             if current:
                 bets.append(current)
             section = None
@@ -216,6 +217,8 @@ def check_links(lines: list[tuple[int, str]], base: Path, path: str) -> list[str
 
 
 def check_file(path: Path, today: dt.date) -> list[str]:
+    if not path.exists():
+        return [f"{path}:1: the bet record does not exist; no bet is framed yet"]
     lines = strip_fences(path.read_text(encoding="utf-8").splitlines())
     bets = parse(lines)
     problems = [] if bets else [f"{path}:1: no '## BET-NNN: <name>' section found"]

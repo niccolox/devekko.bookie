@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import os
 import sys
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
@@ -15,8 +16,10 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "bet-record" / "scripts"))
 
 from bet_dialog import MAX_QUESTIONS, Question, frame_questions, memo_questions
-from check_bet import DATE, Bet, check_file, parse, strip_fences, table
-from persist import commit, ensure_ignored, save_prompt, saved_prompts
+from check_bet import DATE, RESULTS, Bet, check_file, first_word_value, parse, strip_fences, table
+from persist import commit, ensure_ignored, ignore, is_private, save_prompt, saved_prompts
+from register import REGISTER, render
+from register import write as write_register
 from scaffold import STACKS, SURFACES, check, scaffold, setup_questions
 
 Entry = dict[str, Any]
@@ -225,6 +228,11 @@ def rows(bet: Bet, section: str) -> list[list[str]]:
     return [cells for _, cells in table(bet.sections.get(section, []))[1]]
 
 
+def results(bet: Bet) -> list[tuple[str, str]]:
+    """The number and the result of each kill criterion, in lower case as the checker reads it."""
+    return [(cells[0], cells[-1].lower()) for cells in rows(bet, "Kill criteria")]
+
+
 def field(bet: Bet, name: str) -> str:
     return bet.fields.get(name, ("Open", 0))[0]
 
@@ -282,9 +290,7 @@ def gate_iterate(bet: Bet, entry: Entry, record: Path, today: dt.date) -> str | 
 
 
 def gate_score(bet: Bet, entry: Entry, record: Path, today: dt.date) -> str | None:
-    open_rows = [
-        cells[0] for cells in rows(bet, "Kill criteria") if cells[-1] not in ("met", "not met")
-    ]
+    open_rows = [number for number, result in results(bet) if result not in ("met", "not met")]
     return f"criteria still open: {', '.join(open_rows)}" if open_rows else None
 
 
@@ -445,6 +451,59 @@ def current(progress: dict[str, Entry]) -> Stage | None:
     )
 
 
+def stage_cell(progress: dict[str, Entry]) -> str:
+    if not progress:
+        return "not started"
+    stage = current(progress)
+    if stage is None:
+        return "finished"
+    return f"{stage.name} ({STAGES.index(stage) + 1} of {len(STAGES)})"
+
+
+def criteria_cell(bet: Bet) -> str:
+    found = [result for _, result in results(bet)]
+    counts = [f"{found.count(result)} {result}" for result in RESULTS if result in found]
+    other = len(found) - sum(found.count(result) for result in RESULTS)
+    if other:
+        counts.append(f"{other} not valid")
+    return ", ".join(counts) or "none"
+
+
+def register_rows(record: Path) -> list[dict[str, str]]:
+    """One row for each bet in the record, with its stage from its progress file."""
+    if not record.exists():
+        return []
+    bets = parse(strip_fences(record.read_text(encoding="utf-8").splitlines()))
+    result = []
+    for bet in sorted(bets, key=lambda b: b.bet_id):
+        progress = load_progress(record, bet.bet_id)
+        dates = [str(entry["date"]) for entry in progress.values() if entry.get("date")]
+        result.append(
+            {
+                "Bet": bet.bet_id,
+                "Name": bet.name,
+                "Status": first_word_value(field(bet, "Status")),
+                "Stage": stage_cell(progress),
+                "Decision date": first_word_value(field(bet, "Decision date")).split(" ")[0],
+                "Criteria": criteria_cell(bet),
+                "Updated": max(dates, default=""),
+            }
+        )
+    return result
+
+
+def update_register(record: Path, root: Path) -> str:
+    """Write BOOKIE.md from the record and the progress files.
+
+    The register is as private as the record. When git keeps the record out of commits,
+    the register goes into .gitignore, so that the names of the bets stay out of git.
+    """
+    if is_private(root, record):
+        ignore(root, REGISTER)
+    relative = os.path.relpath(record.resolve(), root.resolve())
+    return write_register(root, render(register_rows(record), relative))
+
+
 def describe(
     stage: Stage,
     bet_id: str,
@@ -551,11 +610,13 @@ def finish(
     progress[name] = entry
     save_progress(record, bet_id, progress)
     following = current(progress)
+    registered = update_register(record, root)
     sha, left_out = commit(root, f"bet/{bet_id.lower()}", f"bookie({bet_id}): {name} {state}")
     return {
         "stage": name,
         "status": state,
         "next": following.name if following else None,
+        "register": registered,
         "commit": sha,
         "left_out": left_out,
     }
@@ -574,6 +635,7 @@ def run_scaffold(
     entry.update(root=str(root.resolve()), answers={"Stack": stack, "Surface": surface})
     progress["setup"] = entry
     save_progress(record, bet_id, progress)
+    actions.append((REGISTER, update_register(record, root)))
     return actions
 
 
@@ -604,7 +666,10 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("record", type=Path)
     parser.add_argument("bet_id")
-    parser.add_argument("command", choices=("next", "status", "scaffold", "prompt", "done", "skip"))
+    parser.add_argument(
+        "command",
+        choices=("next", "status", "scaffold", "prompt", "register", "done", "skip"),
+    )
     parser.add_argument("stage", nargs="?", choices=sorted(BY_NAME))
     parser.add_argument("--evidence")
     parser.add_argument("--answer", action="append", default=[])
@@ -625,6 +690,9 @@ def main(argv: list[str] | None = None) -> int:
             parser.error("scaffold needs --stack and --surface")
         actions = run_scaffold(args.record, args.bet_id, root, args.stack, args.surface)
         print(json.dumps(dict(actions), indent=1))
+    elif args.command == "register":
+        action = update_register(args.record, root)
+        print(json.dumps({REGISTER: action, "bets": len(register_rows(args.record))}, indent=1))
     elif args.command == "prompt":
         if args.number is None:
             parser.error("prompt needs --number and the filled prompt on stdin")

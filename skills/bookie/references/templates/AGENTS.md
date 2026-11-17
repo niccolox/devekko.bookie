@@ -2,15 +2,50 @@
 
 {{TODO: One sentence. What this project does, and for whom.}}
 
-[PRODUCTS.md](PRODUCTS.md) holds the product decisions. [DESIGN.md](DESIGN.md) holds the system design. The bet record is `{{record}}`.
+[PRODUCTS.md](PRODUCTS.md) holds the product decisions. [DESIGN.md](DESIGN.md) holds the system design. [BOOKIE.md](BOOKIE.md) is the register of the bets. It lists each bet with its status and its stage. Bookie writes that file, so do not edit it. The bet record is `{{record}}`.
 
 ## Start each task
 
-1. Start with `/poteto-mode` and the task.
+The bet comes before the build. Do the bet steps first. Start `/poteto-mode` only after them.
+
+### 1. The bet
+
+1. Read [BOOKIE.md](BOOKIE.md). Find the bet that the task is for, and its stage.
+2. Check the bet record. A line that the checker prints stops the work until it is fixed:
+
+   ```sh
+   python3 {{skills}}/bet-record/scripts/check_bet.py {{record}}
+   ```
+
+3. In each case in this table, write no code. Ask the operator to type the command. The bet skills start only from a slash command that the operator types.
+
+   | Case | The operator types |
+   | --- | --- |
+   | No bet covers the task. | `/bookie` |
+   | The stage of the bet is `not started`. | `/bookie BET-NNN` |
+   | The kill criteria of the bet are not confirmed. | `/bookie BET-NNN` |
+   | The stage of the bet is before `build`: setup, frame, build-or-buy, scope, or evals. | `/bookie BET-NNN` |
+   | The decision date of the bet is today or in the past. | `/bookie BET-NNN`, to score the criteria and write the memo |
+
+4. A task that changes no product behavior, such as a dependency update or a typo, needs no bet. Say so, and continue.
+
+### 2. The build
+
+1. Start `/poteto-mode` with the task. Name the bet and its stage in the task.
 2. Say the goal and the smallest change that meets it.
 3. Name the data shape before you write code.
 4. For a change that crosses a function boundary, write a plan and get it corrected before you build.
 5. Finish with proof from the real artifact: the command, its output, or a screenshot.
+
+### 3. After the build
+
+1. Add one row to the build log of the bet for each verified unit. Give a pointer that resolves: a commit, a file, or an output path.
+2. Run the checker from step 1 again.
+3. Write the register again:
+
+   ```sh
+   python3 {{skills}}/bookie/scripts/bookie.py {{record}} BET-NNN register
+   ```
 
 ## Commands
 
@@ -22,7 +57,6 @@ Run the test, lint, and type commands before you say that a change works.
 
 - The kill criteria and the decision date come before the first line of code. Only the operator confirms or changes them.
 - `/bookie BET-NNN` continues a bet at its current stage. Do not do a stage out of order.
-- Add one build log row for each verified unit, with a pointer that resolves: a commit, a file, or an output path.
 - Count what people did, not what they said. A compliment is not usage, and a promise is not payment.
 - Write people as roles, such as "design partner A". Never put a name, an email, or a company name in the record or in these files.
 

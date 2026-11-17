@@ -21,18 +21,19 @@ Written on 2026-11-17, when the skills moved here from the saasx2x project. Chan
 ## Upstream pstack
 
 - `pstack.lock` names `backnotprop/pstack` on `main`. The first pull was on 2026-11-17 at commit `f2772d5`, with 58 skills. `setup-bookie` installs pstack from the same source in a user project.
-- That source does not have the `poteto-mode` trigger that runs `bet-record` when a project names a bet record. The trigger is one line in `skills/poteto-mode/SKILL.md` of the fork `niccolox/pstack-bets`. A session here, a sandbox, and a user project do not have it.
+- That source does not have the `poteto-mode` trigger that runs `bet-record` when a project names a bet record. That trigger is one line in `skills/poteto-mode/SKILL.md` of the fork `niccolox/pstack-bets`. A project does not need it: the `AGENTS.md` that bookie writes tells each agent to do the bet steps before `/poteto-mode`.
 
 ## Open work
 
 1. Install the published version with `npx` in an empty folder, and run a full `/setup-bookie` and `/bookie` session there. Only the script steps were run so far. The model step and the operator questions were not run.
-2. Decide where the `poteto-mode` trigger for `bet-record` lives, now that pstack comes from `backnotprop/pstack`.
-3. Decide what the fork `niccolox/pstack-bets` is for, now that users install from this repository.
-4. Decide what saasx2x does with its copies: keep them, or install with `npx skills add niccolox/devekko.bookie`.
+2. Decide what the fork `niccolox/pstack-bets` is for, now that users install from this repository.
+3. Decide what saasx2x does with its copies: keep them, or install with `npx skills add niccolox/devekko.bookie`.
 
 ## What was verified on 2026-11-17
 
-- `make check` on Python 3.11: lint, types, and 78 tests passed. Six tests cover the pstack sync, with a local repository as the upstream. Four cover the install script. Two cover the pstack check of `setup-bookie`, and two check that the sources and the skill names agree.
+- `make check` on Python 3.11: lint, types, and 90 tests passed. Six tests cover the pstack sync, with a local repository as the upstream. Four cover the install script. Two cover the pstack check of `setup-bookie`, and two check that the sources and the skill names agree. Nine cover the register, and two cover the order of the bet steps in `AGENTS.md`.
+- The register from a copy of a real bet record showed the correct row: the status word only, the decision date, and `5 open`. That record is in `.local/`, and the script added `BOOKIE.md` to `.gitignore`.
+- The checker command in the generated `AGENTS.md` ran in both install layouts: `.claude/skills/` for a copy and `.agents/skills/` for links.
 - `npx skills add niccolox/devekko.bookie -l` found the five skills, with no second copy from the links in `.claude/skills/`.
 - `npx skills add niccolox/devekko.bookie --skill '*' -a claude-code -y` in an empty folder put the five skills in `.claude/skills/` and wrote `skills-lock.json` at `59c711c`. The scripts ran there.
 - With the working copy installed by `npx skills add <this folder>`: the pstack check printed `missing`, its `install` command added 58 skills, the check then printed `present`, and the setup steps made one commit on `setup/bookie` that holds `skills-lock.json`. This passed with the bet skills in `.agents/skills/` and also with the bet skills in `.claude/skills/`.

@@ -8,6 +8,7 @@ from pathlib import Path
 TEMPLATES = Path(__file__).resolve().parents[1] / "references" / "templates"
 FILES = ("AGENTS.md", "CLAUDE.md", "PRODUCTS.md", "DESIGN.md")
 TODO = "{{TODO"
+DEFAULT_SKILLS = ".claude/skills"
 ALIASES = {"PRODUCTS.md": "PRODUCT.md"}
 
 STACKS: dict[str, str] = {
@@ -137,11 +138,23 @@ def write_ignore(root: Path, stack: str) -> str:
     return f"added {len(missing)} lines"
 
 
-def render(name: str, project: str, record: str, stack: str, surface: str) -> str:
+def skills_folder(root: Path, here: Path | None = None) -> str:
+    """The folder that holds the installed skills, as a path from the project root.
+
+    The folder differs between agents, so take it from the place of this script. A script
+    that runs from outside the project gives the usual folder for Claude Code.
+    """
+    here = here or Path(__file__).absolute().parents[2]
+    relative = os.path.relpath(here, os.path.abspath(root))
+    return DEFAULT_SKILLS if relative.startswith("..") else relative
+
+
+def render(name: str, project: str, record: str, stack: str, surface: str, skills: str) -> str:
     text = (TEMPLATES / name).read_text(encoding="utf-8")
     return (
         text.replace("{{project}}", project)
         .replace("{{record}}", record)
+        .replace("{{skills}}", skills)
         .replace("{{commands}}", STACKS[stack])
         .replace("{{surface}}", SURFACES[surface])
     )
@@ -159,7 +172,8 @@ def scaffold(root: Path, record: Path, stack: str, surface: str) -> list[tuple[s
         path = existing(root, name)
         if path is None:
             (root / name).write_text(
-                render(name, root.resolve().name, relative, stack, surface), encoding="utf-8"
+                render(name, root.resolve().name, relative, stack, surface, skills_folder(root)),
+                encoding="utf-8",
             )
             actions.append((name, "created"))
             continue

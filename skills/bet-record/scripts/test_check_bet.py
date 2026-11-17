@@ -126,6 +126,12 @@ class CheckBet(unittest.TestCase):
             problems(BUILDING + "\nSee [plan](PLAN.md).\n", extra={"PLAN.md": "x"}), []
         )
 
+    def test_a_missing_record_gives_one_problem_line_and_no_crash(self):
+        with tempfile.TemporaryDirectory() as folder:
+            found = check_file(Path(folder) / "none.md", TODAY)
+        self.assertEqual(len(found), 1)
+        self.assertIn("does not exist", found[0])
+
     def test_bets_inside_code_fences_are_ignored(self):
         self.assertEqual(problems(BUILDING + "\n```markdown\n## BET-009: Example\n```\n"), [])
 

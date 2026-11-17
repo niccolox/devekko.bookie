@@ -10,7 +10,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "bookie" / "scripts"))
 
+from bookie import update_register
 from persist import commit
+from register import REGISTER
 from scaffold import STACKS, SURFACES, check, scaffold, setup_questions
 
 SETTINGS = Path(".claude") / "settings.json"
@@ -81,6 +83,7 @@ def turn_off_setup_pstack(root: Path) -> str:
 def project(root: Path, record: Path, stack: str, surface: str) -> dict[str, str]:
     actions = dict(scaffold(root, record, stack, surface))
     actions[str(SETTINGS)] = turn_off_setup_pstack(root)
+    actions[REGISTER] = update_register(record, root)
     return actions
 
 
