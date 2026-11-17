@@ -25,7 +25,7 @@ Written on 2026-11-17, when the skills moved here from the saasx2x project. Chan
 
 ## Open work
 
-1. Install the published version with `npx` in an empty folder, and run a full `/setup-bookie` and `/bookie` session there. Only the script steps were run so far, and the pstack step was run only from the working copy. The model step and the operator questions were not run.
+1. Install the published version with `npx` in an empty folder, and run a full `/setup-bookie` and `/bookie` session there. Only the script steps were run so far. The model step and the operator questions were not run.
 2. Decide where the `poteto-mode` trigger for `bet-record` lives, now that pstack comes from `backnotprop/pstack`.
 3. Decide what the fork `niccolox/pstack-bets` is for, now that users install from this repository.
 4. Decide what saasx2x does with its copies: keep them, or install with `npx skills add niccolox/devekko.bookie`.
@@ -36,6 +36,7 @@ Written on 2026-11-17, when the skills moved here from the saasx2x project. Chan
 - `npx skills add niccolox/devekko.bookie -l` found the five skills, with no second copy from the links in `.claude/skills/`.
 - `npx skills add niccolox/devekko.bookie --skill '*' -a claude-code -y` in an empty folder put the five skills in `.claude/skills/` and wrote `skills-lock.json` at `59c711c`. The scripts ran there.
 - With the working copy installed by `npx skills add <this folder>`: the pstack check printed `missing`, its `install` command added 58 skills, the check then printed `present`, and the setup steps made one commit on `setup/bookie` that holds `skills-lock.json`. This passed with the bet skills in `.agents/skills/` and also with the bet skills in `.claude/skills/`.
+- After the push of commit `874c337`: `npx skills add niccolox/devekko.bookie --skill '*' -a claude-code -y` in an empty folder pinned that commit in `skills-lock.json`. The pstack check printed `missing`, its `install` command added 58 skills, and the check then printed `present`.
 - `npx skills update -y` in a project with both sources fetched 2 sources and reported that all skills were up to date. An update after a real change was not tested.
 - `make pstack` pulled 58 skills on the first run. A second run reported `current` and did not rewrite the local copy.
 - `make bookie REPO=<an empty folder>` installed 58 pstack skills, the 5 bet skills, and 2 agent definitions.
