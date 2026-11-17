@@ -22,7 +22,9 @@ The skills are [Agent Skills](https://agentskills.io) for Claude Code and other 
 ```text
 skills/<name>/           The source of each skill: SKILL.md, scripts/, references/
 .claude/skills/<name>    A link to skills/<name>, so a session here loads the source
-scripts/                 sandbox.sh and fork.sh, run by the Makefile
+vendor/pstack/           The upstream pstack skills (git ignores this folder)
+pstack.lock              The upstream source, branch, and commit hash
+scripts/, tests/         The scripts that the Makefile runs, and their tests
 sandbox/                 Test projects (git ignores this folder)
 docs/status.md           The current state and the open work
 ```
@@ -33,10 +35,28 @@ You need `uv`, `git`, and `make`.
 
 ```bash
 make install
+make pstack
 make check
 ```
 
 `make check` runs the lint, the type check, and the tests on Python 3.11. Run `make help` for every command.
+
+## Upstream pstack
+
+The bet skills work with the other pstack skills, such as `poteto-mode` and `setup-pstack`. Those come from the repository in `pstack.lock`:
+
+```json
+{
+  "source": "backnotprop/pstack",
+  "branch": "main",
+  "commit": "<the hash of the last pull>",
+  "synced": "<the date of the last pull>"
+}
+```
+
+`make pstack` asks GitHub for the branch's current hash. It pulls the files into `vendor/pstack/` only when that hash differs from the hash of the local copy. `make pstack-check` compares the hashes and pulls nothing. With no network, both keep the local copy.
+
+To use another source, such as the fork, change `source` and run `make pstack`.
 
 ## Test a skill by hand
 
@@ -47,7 +67,7 @@ cd sandbox/demo && claude
 
 In the session, type `/setup-bookie`, then `/bookie`.
 
-The sandbox is a new project with its own git repository. It gets the other pstack skills from the checkout at `../pstack-bets`, when that folder exists, and then the five skills from this repository as copies. A copy does not change when you edit the source, so make a new sandbox after a change. `make sandbox-clean` removes every sandbox.
+The sandbox is a new project with its own git repository. It gets the upstream pstack skills from `vendor/pstack/`, and then the five skills from this repository as copies. A copy does not change when you edit the source, so make a new sandbox after a change. `make sandbox-clean` removes every sandbox.
 
 ## Publish to the fork
 
@@ -66,3 +86,4 @@ make fork-copy     # copies the skills into ../pstack-bets/skills
 ```
 
 `fork-copy` runs no git command. Make the branch, the commit, and the PR in the checkout.
+# devekko.bookie
