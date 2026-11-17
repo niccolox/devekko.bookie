@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "oversized-h1",
+        "value": "*",
+        "files": [
+          "docs/assets/brochure/bookie-brochure.html"
+        ],
+        "createdAt": "2026-11-17T23:21:03.820Z",
+        "reason": "Claude: the page is a poster rendered to one PNG image, with no viewport fold; the headline is the intended focus"
+      }
+    ]
+  }
+}

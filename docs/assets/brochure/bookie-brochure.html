@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Bookie brochure</title>
+<style>
+  :root {
+    --felt: #0f2a1f;
+    --felt-2: #163a2b;
+    --cream: #f6efe0;
+    --paper-line: #c9bfa8;
+    --ink: #10221b;
+    --sage: #a8c3b5;
+    --met: #1f9d55;
+    --miss: #d64545;
+    --open: #7d8590;
+    --gold: #e0b44c;
+    --met-ink: #146b3a;
+    --miss-ink: #b02e2e;
+    --open-ink: #545b63;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    width: 1080px;
+    height: 1920px;
+    background: var(--felt);
+    color: var(--cream);
+    font-family: "Noto Sans", "DejaVu Sans", sans-serif;
+    padding: 64px 72px 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+    overflow: hidden;
+  }
+  .mono { font-family: "Noto Sans Mono", "DejaVu Sans Mono", monospace; }
+
+  /* header */
+  header { display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 22px; }
+  .brand .word { font-size: 64px; font-weight: 800; letter-spacing: -1.5px; line-height: 1; }
+  .badge {
+    border: 1.5px solid var(--sage); color: var(--sage);
+    border-radius: 999px; padding: 10px 20px; font-size: 19px; letter-spacing: .4px;
+  }
+
+  /* hero */
+  h1 {
+    font-family: "Noto Serif Display", "Noto Serif", serif;
+    font-weight: 700; font-size: 76px; line-height: 1.02; letter-spacing: -1.5px;
+    margin: 0;
+  }
+  h1 em { font-style: normal; color: var(--gold); }
+  .sub { font-size: 27px; line-height: 1.45; color: var(--sage); margin: -12px 0 0; max-width: 900px; }
+  .sub b { color: var(--cream); font-weight: 600; }
+
+  .label {
+    font-family: inherit;
+    font-size: 17px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); margin: 0 0 16px;
+  }
+
+  /* terms */
+  .terms { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .term {
+    background: var(--felt-2); border: 1px solid #24523f; border-radius: 18px;
+    padding: 20px 22px; display: flex; gap: 18px; align-items: flex-start;
+  }
+  .term .emoji { font-family: "Noto Color Emoji"; font-size: 34px; line-height: 1; }
+  .term h3 { margin: 0 0 6px; font-size: 25px; }
+  .term p { margin: 0; font-size: 19px; line-height: 1.45; color: var(--sage); }
+
+  /* register slip */
+  .slip {
+    position: relative; background: var(--cream); color: var(--ink);
+    border-radius: 18px; padding: 24px 28px 18px 88px;
+  }
+  .slip::before, .slip::after {
+    content: ""; position: absolute; top: 50%; width: 34px; height: 34px;
+    background: var(--felt); border-radius: 50%; transform: translateY(-50%);
+  }
+  .slip::before { left: -17px; }
+  .slip::after { right: -17px; }
+  .slip .stub {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 64px;
+    border-right: 2.5px dashed var(--felt);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .slip .stub span {
+    transform: rotate(-90deg); white-space: nowrap; font-weight: 700;
+    letter-spacing: 3px; font-size: 17px;
+  }
+  .slip h4 { margin: 0 0 12px; font-size: 21px; display: flex; justify-content: space-between; }
+  .slip h4 small { font-weight: 400; color: #4a5850; font-size: 17px; }
+  table { width: 100%; border-collapse: collapse; font-size: 17px; }
+  th {
+    text-align: left; font-size: 14px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: #4a5850; padding: 0 10px 8px 0; border-bottom: 2px solid var(--paper-line);
+  }
+  td { white-space: nowrap; padding: 10px 14px 10px 0; border-bottom: 1px solid #e3d9c3; }
+  tr:last-child td { border-bottom: 0; }
+  .chip {
+    display: inline-block; padding: 3px 12px; border-radius: 999px; font-size: 15px;
+    font-weight: 700; color: #fff;
+  }
+  .chip.no { background: var(--miss-ink); }
+  .chip.users { background: var(--met-ink); }
+  .chip.frame { background: var(--open-ink); }
+  .score { font-weight: 700; }
+  .score .m { color: var(--met-ink); }
+  .score .x { color: var(--miss-ink); }
+  .score .o { color: var(--open-ink); }
+
+  /* stages */
+  .stages { display: flex; flex-wrap: wrap; gap: 8px; }
+  .stage {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--felt-2); border: 1px solid #24523f; border-radius: 999px;
+    padding: 6px 16px 6px 6px; font-size: 17px;
+  }
+  .stage b {
+    width: 28px; height: 28px; border-radius: 50%; background: var(--cream); color: var(--ink);
+    display: grid; place-items: center; font-size: 15px;
+  }
+  .stage.gate { border-color: var(--gold); }
+  .stage.gate b { background: var(--gold); }
+  .note { font-size: 18px; color: var(--sage); margin: 14px 0 0; }
+  .note .key { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--gold); margin-right: 6px; }
+
+  /* footer */
+  footer { margin-top: auto; display: flex; flex-direction: column; gap: 16px; }
+  .install {
+    background: #07170f; border-radius: 18px; padding: 22px 30px; font-size: 22px; line-height: 1.7;
+  }
+  .install div { white-space: pre; }
+  .install .p { color: var(--met); user-select: none; }
+  .install .c { color: #7f9a8c; }
+  .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .facts div {
+    border: 1.5px solid #24523f; border-radius: 16px; padding: 16px 20px;
+    font-size: 17px; line-height: 1.5; color: var(--sage);
+  }
+  .facts b { color: var(--cream); }
+  .url { text-align: center; font-size: 19px; color: var(--sage); letter-spacing: .5px; margin-top: -14px; }
+  .url b { color: var(--cream); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <svg width="132" height="94" viewBox="40 36 180 128" aria-hidden="true">
+      <rect x="40" y="36" width="180" height="128" rx="12" fill="#f6efe0"/>
+      <circle cx="40" cy="100" r="13" fill="#0f2a1f"/>
+      <circle cx="220" cy="100" r="13" fill="#0f2a1f"/>
+      <line x1="84" y1="46" x2="84" y2="154" stroke="#0f2a1f" stroke-width="2" stroke-dasharray="5 6"/>
+      <text x="66" y="100" transform="rotate(-90 66 100)" text-anchor="middle" dominant-baseline="middle" font-family="Noto Sans Mono, monospace" font-size="15" font-weight="700" letter-spacing="2" fill="#0f2a1f">BET-001</text>
+      <path d="M99 68 l5 5 l11 -12" fill="none" stroke="#1f9d55" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="126" y="62" width="76" height="9" rx="4.5" fill="#c9bfa8"/>
+      <path d="M100 94 l12 12 M112 94 l-12 12" fill="none" stroke="#d64545" stroke-width="4.5" stroke-linecap="round"/>
+      <rect x="126" y="96" width="60" height="9" rx="4.5" fill="#c9bfa8"/>
+      <circle cx="106" cy="134" r="6" fill="none" stroke="#7d8590" stroke-width="3.5"/>
+      <rect x="126" y="130" width="68" height="9" rx="4.5" fill="#c9bfa8"/>
+    </svg>
+    <div class="word">bookie</div>
+  </div>
+  <div class="badge">Agent Skills for Claude Code and other agents</div>
+</header>
+
+<h1>Set the kill criteria before your agent writes <em>line one.</em></h1>
+<p class="sub">Your agent can build the app in an afternoon. Bookie runs each idea as a bet: <b>fixed terms, a thin build, real users,</b> and a <b>go, no-go, or pivot</b> call on a date you pick first.</p>
+
+<section>
+  <h2 class="label">The terms of every bet</h2>
+  <div class="terms">
+    <div class="term"><span class="emoji">📝</span><div><h3>Terms first</h3><p>A core question, 3 to 6 kill criteria with numbers, and a decision date. All before any code.</p></div></div>
+    <div class="term"><span class="emoji">🔒</span><div><h3>Terms stay put</h3><p>After the frame stage, no agent changes a criterion or the date. Only you can.</p></div></div>
+    <div class="term"><span class="emoji">👀</span><div><h3>Only acts count</h3><p>A second login or a payment goes in the log. A compliment goes nowhere.</p></div></div>
+    <div class="term"><span class="emoji">⚖️</span><div><h3>Settled on the date</h3><p>The agent runs the evidence again. Each criterion is met or not met. You make the call.</p></div></div>
+  </div>
+</section>
+
+<section>
+  <h2 class="label">One register for every bet</h2>
+  <div class="slip">
+    <div class="stub"><span class="mono">BOOKIE.md</span></div>
+    <h4>The register at the root of your repo <small>Bookie writes it after each stage</small></h4>
+    <table>
+      <thead><tr><th>Bet</th><th>Name</th><th>Status</th><th>Stage</th><th>Decision</th><th>Criteria</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">BET-001</td><td>Invoice match</td><td><span class="chip no">Decided: no-go</span></td><td>finished</td><td class="mono">2026-09-30</td><td class="score"><span class="m">1 met</span>, <span class="x">3 not met</span></td></tr>
+        <tr><td class="mono">BET-002</td><td>Weekly cash report</td><td><span class="chip users">With users</span></td><td>iterate (9 of 11)</td><td class="mono">2026-12-04</td><td class="score"><span class="m">2 met</span>, <span class="o">2 open</span></td></tr>
+        <tr><td class="mono">BET-003</td><td>Supplier risk alerts</td><td><span class="chip frame">Framing</span></td><td>frame (2 of 11)</td><td class="mono"></td><td class="score"><span class="o">none</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2 class="label">Eleven stages, one gate each</h2>
+  <div class="stages">
+    <div class="stage"><b>1</b>setup</div>
+    <div class="stage gate"><b>2</b>frame</div>
+    <div class="stage"><b>3</b>build-or-buy</div>
+    <div class="stage"><b>4</b>scope</div>
+    <div class="stage"><b>5</b>evals</div>
+    <div class="stage"><b>6</b>build with /poteto-mode</div>
+    <div class="stage"><b>7</b>harden</div>
+    <div class="stage"><b>8</b>users</div>
+    <div class="stage"><b>9</b>iterate</div>
+    <div class="stage gate"><b>10</b>score</div>
+    <div class="stage gate"><b>11</b>memo</div>
+  </div>
+  <p class="note"><span class="key"></span>You confirm the terms at frame, and you make the call at score and memo. No code before stage 6.</p>
+</section>
+
+<footer>
+  <div class="install mono">
+    <div><span class="p">$ </span>npx skills add niccolox/devekko.bookie</div>
+    <div><span class="p">&gt; </span>/setup-bookie   <span class="c"># once for each project</span></div>
+    <div><span class="p">&gt; </span>/bookie         <span class="c"># start your first bet</span></div>
+  </div>
+  <div class="facts">
+    <div><b>One git commit for each stage</b> on <span class="mono">bet/bet-nnn</span>. Nothing is pushed.</div>
+    <div><b>FastAPI and React</b> ready at setup. Python and TypeScript work too.</div>
+    <div><b>No account and no server.</b> Markdown and Python scripts in your repo.</div>
+  </div>
+</footer>
+<div class="url">github.com/<b>niccolox/devekko.bookie</b></div>
+
+</body>
+</html>

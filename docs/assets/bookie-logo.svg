@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="200" viewBox="0 0 640 200" role="img" aria-labelledby="title desc">
+  <title id="title">Bookie</title>
+  <desc id="desc">A bet slip with three kill criteria: one met, one not met, and one open.</desc>
+  <rect width="640" height="200" rx="24" fill="#0f2a1f"/>
+  <rect x="40" y="36" width="180" height="128" rx="12" fill="#f6efe0"/>
+  <circle cx="40" cy="100" r="13" fill="#0f2a1f"/>
+  <circle cx="220" cy="100" r="13" fill="#0f2a1f"/>
+  <line x1="84" y1="46" x2="84" y2="154" stroke="#0f2a1f" stroke-width="2" stroke-dasharray="5 6"/>
+  <text x="66" y="100" transform="rotate(-90 66 100)" text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="700" letter-spacing="2" fill="#0f2a1f">BET-001</text>
+  <path d="M99 68 l5 5 l11 -12" fill="none" stroke="#1f9d55" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="126" y="62" width="76" height="9" rx="4.5" fill="#c9bfa8"/>
+  <path d="M100 94 l12 12 M112 94 l-12 12" fill="none" stroke="#d64545" stroke-width="4.5" stroke-linecap="round"/>
+  <rect x="126" y="96" width="60" height="9" rx="4.5" fill="#c9bfa8"/>
+  <circle cx="106" cy="134" r="6" fill="none" stroke="#7d8590" stroke-width="3.5"/>
+  <rect x="126" y="130" width="68" height="9" rx="4.5" fill="#c9bfa8"/>
+  <text x="256" y="110" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="76" font-weight="800" letter-spacing="-1" fill="#f6efe0">bookie</text>
+  <text x="259" y="148" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="22" fill="#a8c3b5">Agent Skills for product bets</text>
+</svg>
