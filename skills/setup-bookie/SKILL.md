@@ -39,7 +39,7 @@ Do not do steps 7 and 8 here. Bookie's gates and the build stage cover verificat
 
 ## 3. Project files
 
-1. Print the questions and send them to the question tool (`AskUserQuestion` in Claude Code) unchanged:
+1. Print the questions and send them to the question tool (`AskUserQuestion` in Claude Code) unchanged. The first stack, FastAPI and React, is the recommended one:
 
    ```sh
    python3 <scripts>/setup_bookie.py questions

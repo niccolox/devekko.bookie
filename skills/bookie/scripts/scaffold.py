@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from dataclasses import dataclass
 from pathlib import Path
 
 TEMPLATES = Path(__file__).resolve().parents[1] / "references" / "templates"
@@ -10,24 +11,105 @@ FILES = ("AGENTS.md", "CLAUDE.md", "PRODUCTS.md", "DESIGN.md")
 TODO = "{{TODO"
 DEFAULT_SKILLS = ".claude/skills"
 ALIASES = {"PRODUCTS.md": "PRODUCT.md"}
+RECOMMENDED = " (Recommended)"
 
-STACKS: dict[str, str] = {
-    "Python": (
-        "| Task | Command |\n| --- | --- |\n"
-        "| Install | `uv sync` |\n| Test | `uv run pytest` |\n"
-        "| Lint | `uv run ruff check .` |\n| Types | `uv run pyright` |\n"
-        "| Run | {{TODO: the command that starts the app}} |"
+
+@dataclass(frozen=True)
+class Stack:
+    """One stack that a project can use, and what each project file gets for it."""
+
+    hint: str
+    commands: tuple[tuple[str, str], ...]
+    notes: tuple[str, ...]
+    ignore: tuple[str, ...]
+
+
+PYTHON_IGNORE = (
+    "# Python",
+    "__pycache__/",
+    "*.pyc",
+    ".venv/",
+    ".pytest_cache/",
+    ".ruff_cache/",
+    "dist/",
+)
+NODE_IGNORE = ("# TypeScript", "node_modules/", "dist/", "coverage/", "*.tsbuildinfo")
+
+# The first stack is the one that the setup question recommends.
+STACKS: dict[str, Stack] = {
+    "FastAPI and React": Stack(
+        hint="A FastAPI API on Python with uv, and a React UI with TypeScript in web/.",
+        commands=(
+            ("Install", "`uv sync` and `npm --prefix web install`"),
+            ("Test", "`uv run pytest` and `npm --prefix web test`"),
+            ("Lint", "`uv run ruff check .` and `npm --prefix web run lint`"),
+            ("Types", "`uv run pyright` and `npm --prefix web run typecheck`"),
+            ("Run the API", "`uv run fastapi dev`"),
+            ("Run the UI", "`npm --prefix web run dev`"),
+        ),
+        notes=(
+            "**API.** FastAPI on Python, managed with `uv`. The app is in `app/main.py`, so "
+            "`uv run fastapi dev` finds it with no path. The dependency is `fastapi[standard]`. "
+            "Pydantic models are the typed domain model.",
+            "**UI.** React with TypeScript, built with Vite, in `web/`. Its `package.json` has "
+            "the scripts `dev`, `lint`, `typecheck`, and `test`. The Vite template gives `dev` "
+            "and `lint`. Add `typecheck` as `tsc -b` and `test` as `vitest run`.",
+            "**Contract.** The UI gets its types from the OpenAPI schema of the API, made with "
+            "`openapi-typescript`. Do not write the same type by hand on both sides.",
+            "**Rules.** The business rules are in the API. The UI shows state and sends "
+            "actions, and it holds no rule that the API also holds.",
+            "**Tools.** `pytest`, `ruff`, and `pyright` check the API, as development "
+            'dependencies. In `pyproject.toml`, set `pythonpath = ["."]` under '
+            "`[tool.pytest.ini_options]`, so that the tests in `tests/` can import `app`. "
+            "`vitest` tests the UI. A browser test covers each flow that a user depends on.",
+        ),
+        ignore=(*PYTHON_IGNORE, *NODE_IGNORE),
     ),
-    "TypeScript": (
-        "| Task | Command |\n| --- | --- |\n"
-        "| Install | `pnpm install` |\n| Test | `pnpm test` |\n"
-        "| Lint | `pnpm lint` |\n| Types | `pnpm exec tsc --noEmit` |\n"
-        "| Run | {{TODO: the command that starts the app}} |"
+    "Python": Stack(
+        hint="Python with uv, pytest, ruff, and pyright. No UI package.",
+        commands=(
+            ("Install", "`uv sync`"),
+            ("Test", "`uv run pytest`"),
+            ("Lint", "`uv run ruff check .`"),
+            ("Types", "`uv run pyright`"),
+            ("Run", "{{TODO: the command that starts the app}}"),
+        ),
+        notes=(
+            "Python, managed with `uv`. Pydantic models are the typed domain model.",
+            "`pytest`, `ruff`, and `pyright` check the code.",
+        ),
+        ignore=PYTHON_IGNORE,
     ),
-    "Other": (
-        "| Task | Command |\n| --- | --- |\n"
-        "| Install | {{TODO}} |\n| Test | {{TODO}} |\n"
-        "| Lint | {{TODO}} |\n| Types | {{TODO}} |\n| Run | {{TODO}} |"
+    "TypeScript": Stack(
+        hint="TypeScript with npm, and the scripts test, lint, and typecheck.",
+        commands=(
+            ("Install", "`npm install`"),
+            ("Test", "`npm test`"),
+            ("Lint", "`npm run lint`"),
+            ("Types", "`npm run typecheck`"),
+            ("Run", "{{TODO: the command that starts the app}}"),
+        ),
+        notes=(
+            "TypeScript, managed with `npm`. The types are the domain model. Parse outside "
+            "data at the boundary into typed values.",
+            "The `package.json` has the scripts `test`, `lint`, and `typecheck`.",
+        ),
+        ignore=NODE_IGNORE,
+    ),
+    "Other": Stack(
+        hint="Another stack. You fill in the commands and the stack notes.",
+        commands=(
+            ("Install", "{{TODO}}"),
+            ("Test", "{{TODO}}"),
+            ("Lint", "{{TODO}}"),
+            ("Types", "{{TODO}}"),
+            ("Run", "{{TODO}}"),
+        ),
+        notes=(
+            "{{TODO: The language, the framework, and the package manager, with the reason "
+            "for the choice.}}",
+        ),
+        ignore=(),
     ),
 }
 
@@ -67,35 +149,39 @@ IGNORE_BASE = (
     ".idea/",
     ".vscode/",
 )
-IGNORE_STACK: dict[str, tuple[str, ...]] = {
-    "Python": (
-        "# Python",
-        "__pycache__/",
-        "*.pyc",
-        ".venv/",
-        ".pytest_cache/",
-        ".ruff_cache/",
-        "dist/",
-    ),
-    "TypeScript": ("# TypeScript", "node_modules/", "dist/", "coverage/", "*.tsbuildinfo"),
-    "Other": (),
-}
 
-STACK_HINTS: dict[str, str] = {
-    "Python": "uv, pytest, ruff, and pyright.",
-    "TypeScript": "pnpm, the test script, the lint script, and tsc.",
-    "Other": "Leave the commands for you to fill in.",
-}
+
+def stack_key(answer: str) -> str:
+    """The stack that an answer names. The question marks the first stack as recommended."""
+    key = answer.strip().removesuffix(RECOMMENDED)
+    if key not in STACKS:
+        raise SystemExit(f"--stack must be one of: {', '.join(STACKS)}")
+    return key
+
+
+def commands_table(stack: str) -> str:
+    lines = ["| Task | Command |", "| --- | --- |"]
+    lines += [f"| {task} | {command} |" for task, command in STACKS[stack].commands]
+    return "\n".join(lines)
+
+
+def stack_notes(stack: str) -> str:
+    notes = STACKS[stack].notes
+    return notes[0] if len(notes) == 1 else "\n".join(f"- {note}" for note in notes)
 
 
 def setup_questions(prefix: str = "") -> list[dict[str, object]]:
     """The two questions for the question tool that set the stack and the surface."""
+    first = next(iter(STACKS))
     return [
         {
-            "question": f"{prefix}which stack fills the commands in AGENTS.md?",
+            "question": f"{prefix}which stack does the project use?",
             "header": "Stack",
             "multiSelect": False,
-            "options": [{"label": k, "description": v} for k, v in STACK_HINTS.items()],
+            "options": [
+                {"label": name + (RECOMMENDED if name == first else ""), "description": stack.hint}
+                for name, stack in STACKS.items()
+            ],
         },
         {
             "question": f"{prefix}what does a person use to work with the product?",
@@ -125,7 +211,7 @@ def existing(root: Path, name: str) -> Path | None:
 def write_ignore(root: Path, stack: str) -> str:
     """Create .gitignore, or add the missing default lines to it."""
     path = root / ".gitignore"
-    wanted = [*IGNORE_BASE, *IGNORE_STACK[stack]]
+    wanted = list(dict.fromkeys([*IGNORE_BASE, *STACKS[stack].ignore]))
     if not path.exists():
         path.write_text("\n".join(wanted) + "\n", encoding="utf-8")
         return "created"
@@ -155,15 +241,15 @@ def render(name: str, project: str, record: str, stack: str, surface: str, skill
         text.replace("{{project}}", project)
         .replace("{{record}}", record)
         .replace("{{skills}}", skills)
-        .replace("{{commands}}", STACKS[stack])
+        .replace("{{commands}}", commands_table(stack))
+        .replace("{{stack}}", stack_notes(stack))
         .replace("{{surface}}", SURFACES[surface])
     )
 
 
 def scaffold(root: Path, record: Path, stack: str, surface: str) -> list[tuple[str, str]]:
     """Create each missing file. Add only the missing links to an existing one."""
-    if stack not in STACKS:
-        raise SystemExit(f"--stack must be one of: {', '.join(STACKS)}")
+    stack = stack_key(stack)
     if surface not in SURFACES:
         raise SystemExit(f"--surface must be one of: {', '.join(SURFACES)}")
     relative = os.path.relpath(record.resolve(), root.resolve())

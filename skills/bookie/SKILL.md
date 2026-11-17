@@ -74,7 +74,9 @@ The setup stage writes four files at the project root from [`references/template
 | `PRODUCTS.md` | The problem, the fit check, the people, the success metric, the scope, the human step, the unit cost, and the decision log | A person approves money, outside messages, deletes, and publishes |
 | `.gitignore` | `.local/`, `.audit/`, secrets, editor files, and the files that the stack builds | Missing lines are added; existing lines stay |
 | `BOOKIE.md` | The register of the bets. The script writes it from the record, not from a template | See **Register** |
-| `DESIGN.md` | The workflow, the data shape, the agent ladder rung, the integrations, the interface, prompts, evals, production, safety, and failure modes | Rungs 1 to 3, an eval mix of 50/30/20, 3 runs for each case, and 20 steps and 120 seconds for each run |
+| `DESIGN.md` | The workflow, the data shape, the stack, the agent ladder rung, the integrations, the interface, prompts, evals, production, safety, and failure modes | Rungs 1 to 3, an eval mix of 50/30/20, 3 runs for each case, and 20 steps and 120 seconds for each run |
+
+The stack question puts **FastAPI and React** first, as the recommended stack: a FastAPI API on Python with `uv`, and a React UI with TypeScript in `web/`. Keep that stack unless the operator gives a reason for another. Give `scaffold` the answer label as it is; the script accepts it with or without `(Recommended)`. For that stack, `AGENTS.md` gets the commands for both parts with nothing to fill in, `DESIGN.md` gets a Stack section with the layout and the scripts that the commands need, and `.gitignore` gets the lines for Python and for Node.
 
 The script never replaces a file. A file that exists keeps its text: `CLAUDE.md` gets only the `@AGENTS.md` import, and `AGENTS.md` gets only the bet record line. `PRODUCT.md` counts as `PRODUCTS.md`.
 

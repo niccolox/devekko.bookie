@@ -12,6 +12,7 @@ from bookie import (
     STAGES,
     find_bet,
     finish,
+    load_progress,
     next_stage,
     run_prompt,
     run_scaffold,
@@ -19,7 +20,7 @@ from bookie import (
     status,
     update_register,
 )
-from scaffold import FILES, TEMPLATES, skills_folder
+from scaffold import FILES, STACKS, TEMPLATES, render, skills_folder
 
 TODAY = dt.date(2026, 11, 17)
 
@@ -251,6 +252,60 @@ class SetupTest(unittest.TestCase):
         self.assertIn("@AGENTS.md", (self.root / "CLAUDE.md").read_text())
         self.assertIn("A web UI.", (self.root / "DESIGN.md").read_text())
         self.assertNotIn("{{project}}", agents)
+
+    def test_the_stack_question_recommends_fastapi_and_react_first(self):
+        result = next_stage(self.record, "BET-001", TODAY, self.root)
+        stack = result["calls"][0]["questions"][0]
+        labels = [option["label"] for option in stack["options"]]
+        self.assertEqual(
+            labels, ["FastAPI and React (Recommended)", "Python", "TypeScript", "Other"]
+        )
+
+    def test_the_recommended_answer_writes_the_fastapi_and_react_defaults(self):
+        self.scaffold(stack="FastAPI and React (Recommended)")
+        agents = (self.root / "AGENTS.md").read_text()
+        commands = agents[agents.index("## Commands") : agents.index("## Bet rules")]
+        for command in (
+            "`uv run pytest` and `npm --prefix web test`",
+            "`uv run pyright` and `npm --prefix web run typecheck`",
+            "`uv run fastapi dev`",
+            "`npm --prefix web run dev`",
+        ):
+            self.assertIn(command, commands)
+        self.assertNotIn("{{TODO", commands)
+        design = (self.root / "DESIGN.md").read_text()
+        stack = design[design.index("## Stack") : design.index("## Agent ladder")]
+        for word in (
+            "FastAPI",
+            "React",
+            "`app/main.py`",
+            "`openapi-typescript`",
+            "`tsc -b`",
+            "pythonpath",
+        ):
+            self.assertIn(word, stack)
+        ignore = (self.root / ".gitignore").read_text().splitlines()
+        self.assertIn(".venv/", ignore)
+        self.assertIn("node_modules/", ignore)
+        self.assertEqual(ignore.count("dist/"), 1)
+        answers = load_progress(self.record, "BET-001")["setup"]["answers"]
+        self.assertEqual(answers["Stack"], "FastAPI and React")
+
+    def test_a_stack_that_is_not_in_the_list_is_refused(self):
+        with self.assertRaisesRegex(SystemExit, "must be one of: FastAPI and React, Python"):
+            self.scaffold(stack="Rust")
+
+    def test_each_stack_fills_the_commands_and_the_stack_section(self):
+        for stack in STACKS:
+            with self.subTest(stack=stack):
+                for name in ("AGENTS.md", "DESIGN.md"):
+                    text = render(
+                        name, "project", "docs/bets.md", stack, "Web UI", ".claude/skills"
+                    )
+                    self.assertNotIn("{{commands}}", text)
+                    self.assertNotIn("{{stack}}", text)
+        other = render("DESIGN.md", "project", "docs/bets.md", "Other", "Web UI", ".claude/skills")
+        self.assertIn("{{TODO: The language", other)
 
     def test_agents_file_puts_the_bet_steps_before_poteto_mode(self):
         self.scaffold()

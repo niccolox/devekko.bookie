@@ -16,6 +16,12 @@ Map the human job end to end before you choose tools. Each step is code, one mod
 
 One typed domain model is the source of truth. Database rows, API payloads, and model output come from it. Make illegal states impossible to represent.
 
+## Stack
+
+{{stack}}
+
+Change the stack only for a reason that an eval or a real limit shows. Add that reason to the decision log in PRODUCTS.md.
+
 ## Agent ladder
 
 The slice starts on rung {{TODO: 1, 2, or 3}}. Move up only when an eval shows that the lower rung fails.

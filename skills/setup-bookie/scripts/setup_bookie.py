@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).absolute().parents[2] / "bookie" / "script
 from bookie import update_register
 from persist import commit
 from register import REGISTER
-from scaffold import STACKS, SURFACES, check, scaffold, setup_questions
+from scaffold import SURFACES, check, scaffold, setup_questions
 
 SETTINGS = Path(".claude") / "settings.json"
 OVERRIDDEN = "setup-pstack"
@@ -94,7 +94,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("command", choices=("pstack", "questions", "project", "check", "commit"))
     parser.add_argument("--root", type=Path, default=Path("."))
     parser.add_argument("--record", type=Path, default=Path("docs/bet-process.md"))
-    parser.add_argument("--stack", choices=sorted(STACKS))
+    parser.add_argument("--stack", help="the answer to the stack question")
     parser.add_argument("--surface", choices=sorted(SURFACES))
     args = parser.parse_args(argv)
     record = args.record if args.record.is_absolute() else args.root / args.record

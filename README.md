@@ -32,7 +32,7 @@ You need Node.js for `npx`, `git`, and Python 3.11 or later.
 
    - **Pstack.** It checks that the project has the pstack skills. When they are missing, it installs them from `backnotprop/pstack` with the same `skills` CLI.
    - **Models.** It picks the pstack models and writes them into the project.
-   - **Project files.** It asks for the stack and the surface. Then it writes `AGENTS.md`, `CLAUDE.md`, `PRODUCTS.md`, `DESIGN.md`, and `.gitignore`. A file that exists keeps its text and gets only its missing lines. It also writes `BOOKIE.md`, the register of the bets.
+   - **Project files.** It asks for the stack and the surface. FastAPI and React is the recommended stack: a FastAPI API on Python with `uv`, and a React UI with TypeScript in `web/`. Then it writes `AGENTS.md`, `CLAUDE.md`, `PRODUCTS.md`, `DESIGN.md`, and `.gitignore`. A file that exists keeps its text and gets only its missing lines. It also writes `BOOKIE.md`, the register of the bets.
    - **Commit.** It turns `/setup-pstack` off for the project and makes one commit on the branch `setup/bookie`. In a folder with no git repository, it runs `git init` first. It never pushes.
 
 3. Start the first bet:

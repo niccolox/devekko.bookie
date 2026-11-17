@@ -24,7 +24,7 @@ from check_bet import DATE, RESULTS, Bet, check_file, first_word_value, parse, s
 from persist import commit, ensure_ignored, ignore, is_private, save_prompt, saved_prompts
 from register import REGISTER, render
 from register import write as write_register
-from scaffold import STACKS, SURFACES, check, scaffold, setup_questions
+from scaffold import SURFACES, check, scaffold, setup_questions, stack_key
 
 Entry = dict[str, Any]
 Option = tuple[str, str]
@@ -633,6 +633,7 @@ def run_scaffold(
     stage = current(progress)
     if stage is None or stage.name != "setup":
         raise SystemExit("scaffold runs only in the setup stage")
+    stack = stack_key(stack)
     actions = scaffold(root, record, stack, surface)
     ensure_ignored(root)
     entry = dict(progress.get("setup", {}))
@@ -680,7 +681,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--note")
     parser.add_argument("--root", type=Path)
     parser.add_argument("--number", type=int)
-    parser.add_argument("--stack", choices=sorted(STACKS))
+    parser.add_argument("--stack", help="the answer to the stack question")
     parser.add_argument("--surface", choices=sorted(SURFACES))
     parser.add_argument("--today", type=dt.date.fromisoformat, default=dt.date.today())
     args = parser.parse_args(argv)
