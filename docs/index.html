@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>devekko.bookie: Agent Skills for product bets</title>
+<meta name="description" content="Five Agent Skills for Claude Code and other coding agents. Run each product idea as a bet with fixed terms, a thin build, real users, and a go, no-go, or pivot call on a date you pick first.">
+<meta property="og:title" content="devekko.bookie">
+<meta property="og:description" content="Set the kill criteria before your agent writes line one.">
+<meta property="og:image" content="https://niccolox.github.io/devekko.bookie/assets/bookie-brochure.png">
+<link rel="icon" href="assets/bookie-logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700;800&family=Noto+Sans+Mono:wght@400;700&family=Noto+Serif+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --felt: #0f2a1f;
+    --felt-2: #163a2b;
+    --line: #24523f;
+    --cream: #f6efe0;
+    --paper-line: #c9bfa8;
+    --ink: #10221b;
+    --muted-ink: #4a5850;
+    --sage: #a8c3b5;
+    --gold: #e0b44c;
+    --met-ink: #146b3a;
+    --miss-ink: #b02e2e;
+    --open-ink: #545b63;
+    --code-bg: #07170f;
+    --sans: "Noto Sans", "DejaVu Sans", system-ui, sans-serif;
+    --mono: "Noto Sans Mono", "DejaVu Sans Mono", ui-monospace, monospace;
+    --display: "Noto Serif Display", "Noto Serif", Georgia, serif;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--felt);
+    color: var(--cream);
+    font-family: var(--sans);
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  a { color: var(--gold); }
+  a:hover { color: var(--cream); }
+  code, .mono { font-family: var(--mono); font-size: .92em; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding-inline: clamp(16px, 5vw, 48px); }
+
+  /* top bar */
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-block: 28px; }
+  .brand { display: flex; align-items: center; gap: 14px; color: var(--cream); text-decoration: none; }
+  .brand svg { width: 70px; height: auto; flex: none; }
+  .brand span { font-size: 34px; font-weight: 800; letter-spacing: -.8px; }
+  .top nav { display: flex; gap: 20px; flex-wrap: wrap; font-size: 16px; }
+  .top nav a { color: var(--sage); text-decoration: none; }
+  .top nav a:hover { color: var(--cream); }
+
+  /* hero */
+  .hero { padding-block: clamp(32px, 7vw, 72px) 24px; }
+  h1 {
+    font-family: var(--display); font-weight: 700;
+    font-size: clamp(40px, 7vw, 72px); line-height: 1.04; letter-spacing: -1px;
+    margin: 0 0 24px; max-width: 16ch;
+  }
+  h1 em { font-style: normal; color: var(--gold); }
+  .lede { font-size: clamp(19px, 2.4vw, 23px); color: var(--sage); max-width: 46ch; margin: 0 0 32px; }
+  .lede b { color: var(--cream); font-weight: 600; }
+
+  .install {
+    background: var(--code-bg); border-radius: 16px; padding: 20px 24px;
+    font-family: var(--mono); font-size: 17px; line-height: 1.8;
+    overflow-x: auto; max-width: 720px;
+  }
+  .install div { white-space: pre; }
+  .install .p { color: #4fc285; user-select: none; }
+  .install .c { color: #8fa89b; }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+  .btn {
+    display: inline-block; padding: 12px 22px; border-radius: 999px; font-weight: 700;
+    text-decoration: none; font-size: 17px;
+  }
+  .btn.primary { background: var(--gold); color: var(--ink); }
+  .btn.primary:hover { background: var(--cream); color: var(--ink); }
+  .btn.ghost { border: 1.5px solid var(--sage); color: var(--cream); }
+  .btn.ghost:hover { border-color: var(--cream); }
+
+  /* sections */
+  section { padding-block: clamp(40px, 6vw, 64px); border-top: 1px solid var(--line); }
+  .eyebrow {
+    font-size: 14px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); margin: 0 0 10px;
+  }
+  h2 { font-family: var(--display); font-size: clamp(30px, 4.5vw, 44px); line-height: 1.1; margin: 0 0 20px; }
+  h3 { font-size: 21px; margin: 0 0 6px; line-height: 1.3; }
+  p { margin: 0 0 16px; }
+  .muted { color: var(--sage); }
+  .narrow { max-width: 62ch; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .grid.two { grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); }
+  .card {
+    background: var(--felt-2); border: 1px solid var(--line); border-radius: 16px;
+    padding: 22px 22px 18px;
+  }
+  .card .emoji { font-size: 28px; line-height: 1; display: block; margin-bottom: 10px; }
+  .card p { color: var(--sage); margin: 0; font-size: 17px; }
+
+  /* register slip */
+  .slip {
+    position: relative; background: var(--cream); color: var(--ink);
+    border-radius: 16px; padding: 22px 20px 18px 76px; margin-block: 8px 24px;
+  }
+  .slip::before, .slip::after {
+    content: ""; position: absolute; top: 50%; width: 30px; height: 30px;
+    background: var(--felt); border-radius: 50%; transform: translateY(-50%);
+  }
+  .slip::before { left: -15px; }
+  .slip::after { right: -15px; }
+  .slip .stub {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 56px;
+    border-right: 2.5px dashed var(--felt);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .slip .stub span { transform: rotate(-90deg); white-space: nowrap; font-weight: 700; letter-spacing: 3px; font-size: 15px; }
+  .slip h3 { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+  .slip h3 small { font-weight: 400; color: var(--muted-ink); font-size: 15px; }
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th {
+    text-align: left; font-size: 12.5px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--muted-ink); padding: 0 10px 8px 0; border-bottom: 2px solid var(--paper-line); white-space: nowrap;
+  }
+  td { white-space: nowrap; padding: 10px 10px 10px 0; border-bottom: 1px solid #e3d9c3; }
+  tr:last-child td { border-bottom: 0; }
+  .chip { display: inline-block; padding: 2px 11px; border-radius: 999px; font-size: 14px; font-weight: 700; color: #fff; }
+  .chip.no { background: var(--miss-ink); }
+  .chip.users { background: var(--met-ink); }
+  .chip.frame { background: var(--open-ink); }
+  .score { font-weight: 700; }
+  .score .m { color: var(--met-ink); }
+  .score .x { color: var(--miss-ink); }
+  .score .o { color: var(--open-ink); }
+
+  ul.read { list-style: none; padding: 0; margin: 0 0 24px; }
+  ul.read li { padding-left: 34px; position: relative; margin-bottom: 8px; }
+  ul.read li span { position: absolute; left: 0; }
+
+  /* stages */
+  ol.stages { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px; }
+  ol.stages li {
+    display: grid; grid-template-columns: 38px 1fr; grid-template-rows: auto 1fr; gap: 4px 14px; align-items: start;
+    background: var(--felt-2); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px;
+  }
+  ol.stages li.gate { border-color: var(--gold); }
+  ol.stages b.n {
+    grid-row: span 2; width: 34px; height: 34px; border-radius: 50%;
+    background: var(--cream); color: var(--ink); display: grid; place-items: center; font-size: 15px;
+  }
+  ol.stages li.gate b.n { background: var(--gold); }
+  ol.stages strong { font-size: 18px; }
+  ol.stages span.d { color: var(--sage); font-size: 16px; line-height: 1.45; }
+  .key { display: inline-block; width: 11px; height: 11px; border-radius: 50%; background: var(--gold); margin-right: 6px; }
+
+  /* steps */
+  ol.steps { padding-left: 1.3em; margin: 0; }
+  ol.steps li { margin-bottom: 18px; }
+  ol.steps .install { margin-top: 10px; }
+
+  /* skills */
+  dl.skills { display: grid; grid-template-columns: max-content 1fr; gap: 12px 24px; margin: 0; }
+  dl.skills dt { font-family: var(--mono); color: var(--gold); }
+  dl.skills dd { margin: 0; color: var(--sage); }
+  @media (max-width: 560px) {
+    dl.skills { grid-template-columns: 1fr; gap: 2px; }
+    dl.skills dd { margin-bottom: 12px; }
+    .slip { padding-left: 64px; }
+    .slip .stub { width: 44px; }
+  }
+
+  footer { border-top: 1px solid var(--line); padding-block: 32px 48px; color: var(--sage); font-size: 16px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="./" aria-label="bookie home">
+      <svg viewBox="40 36 180 128" aria-hidden="true">
+        <rect x="40" y="36" width="180" height="128" rx="12" fill="#f6efe0"/>
+        <circle cx="40" cy="100" r="13" fill="#0f2a1f"/>
+        <circle cx="220" cy="100" r="13" fill="#0f2a1f"/>
+        <line x1="84" y1="46" x2="84" y2="154" stroke="#0f2a1f" stroke-width="2" stroke-dasharray="5 6"/>
+        <text x="66" y="100" transform="rotate(-90 66 100)" text-anchor="middle" dominant-baseline="middle" font-family="monospace" font-size="15" font-weight="700" letter-spacing="2" fill="#0f2a1f">BET-001</text>
+        <path d="M99 68 l5 5 l11 -12" fill="none" stroke="#1f9d55" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="126" y="62" width="76" height="9" rx="4.5" fill="#c9bfa8"/>
+        <path d="M100 94 l12 12 M112 94 l-12 12" fill="none" stroke="#d64545" stroke-width="4.5" stroke-linecap="round"/>
+        <rect x="126" y="96" width="60" height="9" rx="4.5" fill="#c9bfa8"/>
+        <circle cx="106" cy="134" r="6" fill="none" stroke="#7d8590" stroke-width="3.5"/>
+        <rect x="126" y="130" width="68" height="9" rx="4.5" fill="#c9bfa8"/>
+      </svg>
+      <span>bookie</span>
+    </a>
+    <nav aria-label="Page">
+      <a href="#bet">How a bet works</a>
+      <a href="#register">Register</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/niccolox/devekko.bookie">GitHub</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="hero">
+      <h1>Set the kill criteria before your agent writes <em>line one.</em></h1>
+      <p class="lede">Five Agent Skills for Claude Code and other coding agents. Bookie runs each product idea as a bet: <b>fixed terms, a thin build, real users,</b> and a <b>go, no-go, or pivot</b> call on a date you pick first.</p>
+      <div class="install" aria-label="Install commands">
+        <div><span class="p">$ </span>npx skills add niccolox/devekko.bookie</div>
+        <div><span class="p">&gt; </span>/setup-bookie   <span class="c"># once for each project</span></div>
+        <div><span class="p">&gt; </span>/bookie         <span class="c"># start your first bet</span></div>
+      </div>
+      <div class="cta">
+        <a class="btn primary" href="#install">Install bookie</a>
+        <a class="btn ghost" href="https://github.com/niccolox/devekko.bookie">View on GitHub</a>
+      </div>
+    </div>
+
+    <section aria-labelledby="problem">
+      <p class="eyebrow">🤔 The problem</p>
+      <h2 id="problem">Your agent builds fast. Who decides if it should?</h2>
+      <div class="narrow">
+        <p>Claude Code can scaffold a FastAPI backend, a React UI, auth, and tests in an afternoon. Then you spend a month on polish for a demo that nobody asked for.</p>
+        <p>You know the pattern. The demo works. Three friends say "nice". One person will "probably pay". So you move the decision date by two weeks, then again.</p>
+        <p><b>Bookie is the friend who wrote the date down.</b> 🎲</p>
+      </div>
+    </section>
+
+    <section id="bet" aria-labelledby="bet-h">
+      <p class="eyebrow">🎲 How a bet works</p>
+      <h2 id="bet-h">The terms come first, and they do not move.</h2>
+      <p class="narrow muted">A bookie writes the terms down before the game and pays out on the final score. Bookie does that for a product idea.</p>
+      <div class="grid two">
+        <div class="card"><span class="emoji" aria-hidden="true">📝</span><h3>Terms first</h3><p>Before the first line of code, you write a core question, 3 to 6 kill criteria, and a decision date. Each criterion has a number and names its evidence.</p></div>
+        <div class="card"><span class="emoji" aria-hidden="true">🔒</span><h3>Terms stay put</h3><p>After the frame stage, no agent changes a criterion, a threshold, or the date. Only you can, and the record shows the change.</p></div>
+        <div class="card"><span class="emoji" aria-hidden="true">👀</span><h3>Only acts count</h3><p>The Customer evidence table logs only what a person did: a second login, a payment, a cancellation. A compliment goes nowhere.</p></div>
+        <div class="card"><span class="emoji" aria-hidden="true">⚖️</span><h3>Settled on the date</h3><p>At the score stage, the agent runs the evidence commands again and marks each criterion met or not met. You write the memo and make the call.</p></div>
+      </div>
+      <p class="narrow" style="margin-top:24px">A no-go on the decision date costs you two to four weeks of build. You get those weeks back on the next idea.</p>
+    </section>
+
+    <section id="register" aria-labelledby="register-h">
+      <p class="eyebrow">📒 The register</p>
+      <h2 id="register-h">Every bet in one table.</h2>
+      <p class="narrow muted">Every bet lives in <code>BOOKIE.md</code> at the root of your repo. Bookie writes it again after each stage. Here it is with three bets, with emoji added on this page to show the state.</p>
+
+      <div class="slip">
+        <div class="stub" aria-hidden="true"><span class="mono">BOOKIE.md</span></div>
+        <h3>The register at the root of your repo <small>Bookie writes it after each stage</small></h3>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Bet</th><th>Name</th><th>Status</th><th>Stage</th><th>Decision date</th><th>Criteria</th><th>Updated</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">❌ BET-001</td><td>Invoice match</td><td><span class="chip no">Decided: no-go</span></td><td>🏁 finished</td><td class="mono">2026-09-30</td><td class="score"><span class="m">1 met</span>, <span class="x">3 not met</span></td><td class="mono">2026-09-30</td></tr>
+              <tr><td class="mono">🧪 BET-002</td><td>Weekly cash report</td><td><span class="chip users">With users</span></td><td>🔁 iterate (9 of 11)</td><td class="mono">2026-12-04</td><td class="score"><span class="m">2 met</span>, <span class="o">2 open</span></td><td class="mono">2026-11-16</td></tr>
+              <tr><td class="mono">📝 BET-003</td><td>Supplier risk alerts</td><td><span class="chip frame">Framing</span></td><td>📝 frame (2 of 11)</td><td class="mono"></td><td class="score"><span class="o">none</span></td><td class="mono">2026-11-17</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <h3>How to read it</h3>
+      <ul class="read">
+        <li><span aria-hidden="true">❌</span><b>BET-001</b> ran to its date and missed 3 of 4 criteria. It stays in the table, so the next idea starts with a record of what failed.</li>
+        <li><span aria-hidden="true">🧪</span><b>BET-002</b> has real users and is in its weekly fix loop, with 2 criteria met and 2 still open.</li>
+        <li><span aria-hidden="true">📝</span><b>BET-003</b> is still at the frame stage. Its agent writes no code until you confirm the criteria and the date.</li>
+      </ul>
+
+      <h3>How it works</h3>
+      <ul class="read">
+        <li><span aria-hidden="true">🤖</span><b>Agents read it first.</b> <code>AGENTS.md</code> tells each agent to check the register before a task. When the bet is not at the build stage, the agent stops and asks you to type <code>/bookie BET-NNN</code>.</li>
+        <li><span aria-hidden="true">✍️</span><b>Bookie writes it.</b> The script owns the file, so an edit by hand is replaced at the next stage.</li>
+        <li><span aria-hidden="true">🔐</span><b>Private when you want.</b> Keep the bet record out of git, and <code>BOOKIE.md</code> stays out of git too.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="stages-h">
+      <p class="eyebrow">🗺️ Eleven stages</p>
+      <h2 id="stages-h">One gate each.</h2>
+      <p class="narrow muted">The Stage column of the register shows where each bet is in these eleven stages. Each stage must pass its gate before the next one starts.</p>
+      <ol class="stages">
+        <li><b class="n">1</b><strong>🏗️ setup</strong><span class="d">Writes AGENTS.md, CLAUDE.md, PRODUCTS.md, DESIGN.md, and the register.</span></li>
+        <li class="gate"><b class="n">2</b><strong>📝 frame</strong><span class="d">Core question, kill criteria, and decision date. You confirm them.</span></li>
+        <li><b class="n">3</b><strong>🛒 build-or-buy</strong><span class="d">At most one hour to find what already solves the problem.</span></li>
+        <li><b class="n">4</b><strong>🎯 scope</strong><span class="d">20 to 50 real examples and one success metric.</span></li>
+        <li><b class="n">5</b><strong>🧪 evals</strong><span class="d">An eval set with yes/no checks and a judge rubric.</span></li>
+        <li><b class="n">6</b><strong>🔨 build</strong><span class="d">The thin slice, built with /poteto-mode and run against the evals.</span></li>
+        <li><b class="n">7</b><strong>🛡️ harden</strong><span class="d">The checks to make before real users see it.</span></li>
+        <li><b class="n">8</b><strong>👥 users</strong><span class="d">Real users, and a log of what they did.</span></li>
+        <li><b class="n">9</b><strong>🔁 iterate</strong><span class="d">Each week, turn failures into eval cases and fix the top one.</span></li>
+        <li class="gate"><b class="n">10</b><strong>⚖️ score</strong><span class="d">Each criterion marked met or not met from fresh evidence.</span></li>
+        <li class="gate"><b class="n">11</b><strong>🏁 memo</strong><span class="d">Go, no-go, or pivot, in writing.</span></li>
+      </ol>
+      <p class="muted" style="margin-top:18px"><span class="key" aria-hidden="true"></span>You confirm the terms at frame, and you make the call at score and memo. Stop at any stage: <code>/bookie BET-001</code> continues where you stopped, with your answers saved.</p>
+    </section>
+
+    <section aria-labelledby="dev-h">
+      <p class="eyebrow">🧑‍💻 Built for developers</p>
+      <h2 id="dev-h">It works the way your repo already works.</h2>
+      <div class="grid">
+        <div class="card"><span class="emoji" aria-hidden="true">🧱</span><h3>Your stack, ready</h3><p>Pick FastAPI and React at setup, and Bookie writes the commands for both parts into AGENTS.md and the layout into DESIGN.md. Python, TypeScript, and other stacks work too.</p></div>
+        <div class="card"><span class="emoji" aria-hidden="true">🌿</span><h3>One commit per stage</h3><p>Each stage lands as one commit on the branch bet/bet-nnn. Review it or revert it like any commit. Secrets stay out, and nothing is pushed.</p></div>
+        <div class="card"><span class="emoji" aria-hidden="true">🧪</span><h3>Evals before the build</h3><p>You collect 20 to 50 real examples and turn them into an eval set before the thin slice exists.</p></div>
+        <div class="card"><span class="emoji" aria-hidden="true">🛠️</span><h3>Builds with poteto-mode</h3><p>The build stage hands each unit to /poteto-mode from pstack. Each verified unit goes to the build log.</p></div>
+        <div class="card"><span class="emoji" aria-hidden="true">🙋</span><h3>You make the product calls</h3><p>The criteria, the date, the scope, the first users, and the decision come to you as questions in the agent.</p></div>
+        <div class="card"><span class="emoji" aria-hidden="true">📦</span><h3>Files in your repo</h3><p>The skills are Markdown and Python standard-library scripts. There is no account to create and no server to run.</p></div>
+      </div>
+    </section>
+
+    <section id="install" aria-labelledby="install-h">
+      <p class="eyebrow">🚀 Install</p>
+      <h2 id="install-h">Start your first bet.</h2>
+      <p class="narrow muted">You need Node.js for <code>npx</code>, <code>git</code>, and Python 3.11 or later.</p>
+      <ol class="steps narrow">
+        <li><b>Install the skills</b> from the root of your project. Select all five skills, then your agents.
+          <div class="install"><div><span class="p">$ </span>npx skills add niccolox/devekko.bookie</div></div>
+        </li>
+        <li><b>Set up the project.</b> Start your agent and type the command. It adds pstack when it is missing, writes the project files, and makes one commit.
+          <div class="install"><div><span class="p">&gt; </span>/setup-bookie</div></div>
+        </li>
+        <li><b>Start the first bet.</b> Bookie asks for one paragraph about the problem, then runs the stages in order.
+          <div class="install"><div><span class="p">&gt; </span>/bookie</div></div>
+        </li>
+      </ol>
+      <p class="narrow muted">Update later with <code>npx skills update</code>.</p>
+    </section>
+
+    <section aria-labelledby="skills-h">
+      <p class="eyebrow">🧩 The five skills</p>
+      <h2 id="skills-h">Each one starts from its slash command.</h2>
+      <dl class="skills">
+        <dt>/setup-bookie</dt><dd>Sets up a project in one pass: pstack, model settings, project files, .gitignore, and a commit.</dd>
+        <dt>/bookie</dt><dd>Runs one bet from setup to the memo.</dd>
+        <dt>/bet-record</dt><dd>Keeps the bet record: core question, kill criteria, decision date, build log, score, and memo.</dd>
+        <dt>/bet-diligence</dt><dd>Writes a diligence memo on a dependency, product, or company, with evidence for each finding.</dd>
+        <dt>/bet-discovery</dt><dd>Plans customer interviews and logs only what people did.</dd>
+      </dl>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>devekko.bookie · Agent Skills for product bets</span>
+    <a href="https://github.com/niccolox/devekko.bookie">github.com/niccolox/devekko.bookie</a>
+  </div>
+</footer>
+
+</body>
+</html>
