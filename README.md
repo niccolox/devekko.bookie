@@ -1,18 +1,35 @@
 <p align="center">
-  <img src="docs/assets/bookie-logo.svg" alt="bookie: a bet slip with three kill criteria, one met, one not met, and one open" width="560">
+  <img src="docs/assets/bookie-logo.svg" alt="bookie: a bet slip with three criteria, one met, one not met, and one open" width="560">
 </p>
 
-<h3 align="center">Set the kill criteria before your agent writes line one.</h3>
-
-<p align="center">
-Five Agent Skills for Claude Code and other coding agents.<br>
-Run each product idea as a bet: fixed terms, a thin build, real users,<br>
-and a go, no-go, or pivot call on a date you pick first.
-</p>
+<h3 align="center">Set the no-go criteria before your agent writes line one.</h3>
 
 <p align="center">
-  <code>npx skills add niccolox/devekko.bookie</code>
+Bookie runs each product idea as a bet in Claude Code or another coding agent:<br>
+<b>fixed terms, a thin build, real users,</b> and a <b>go, no-go, or pivot</b> call on a date you pick first.
 </p>
+
+<p align="center">
+  🌐 <a href="https://www.niccolox.com/devekko.bookie/">Website</a> ·
+  🚀 <a href="#-install-bookie-in-a-project">Install</a> ·
+  ❓ <a href="#-before-you-install">FAQ</a>
+</p>
+
+```bash
+npx skills add niccolox/devekko.bookie
+```
+
+Then type two commands in your agent: `/setup-bookie` once for each project, and `/bookie` to start your first bet.
+
+### 🎟️ Your `BOOKIE.md` after three bets
+
+| Bet | Name | Status | Stage | Decision date | Criteria | Updated |
+| --- | --- | --- | --- | --- | --- | --- |
+| ❌ BET-001 | Invoice match | Decided: no-go | 🏁 finished | 2026-09-30 | 1 met, 3 not met | 2026-09-30 |
+| 🧪 BET-002 | Weekly cash report | With users | 🔁 iterate (9 of 11) | 2026-12-04 | 2 met, 2 open | 2026-11-16 |
+| 📝 BET-003 | Supplier risk alerts | Framing | 📝 frame (2 of 11) | | none | 2026-11-17 |
+
+[How to read it](#-the-register)
 
 ---
 
@@ -26,9 +43,9 @@ Bookie is the friend who wrote the date down. 🎲
 
 ## 🎲 How a bet works
 
-A bookie writes the terms down before the game and pays out on the final score. Bookie does that for a product idea.
+**The terms come first, and they do not move.** A bookie writes the terms down before the game and pays out on the final score. Bookie does that for a product idea.
 
-- 📝 **Terms first.** Before the first line of code, you write a core question, 3 to 6 kill criteria, and a decision date. Each criterion has a number and names its evidence. For example: "4 of 10 trial users run the report a second time in week 2."
+- 📝 **Terms first.** Before the first line of code, you write a core question, 3 to 6 no-go criteria, and a decision date. Each criterion has a number and names its evidence. For example: "4 of 10 trial users run the report a second time in week 2."
 - 🔒 **Terms stay put.** After the frame stage, no agent changes a criterion, a threshold, or the date. Only you can, and the record shows the change.
 - 👀 **Only acts count.** The Customer evidence table logs only what a person did: a second login, a payment, a cancellation. A compliment goes nowhere.
 - ⚖️ **Settled on the date.** At the score stage, the agent runs the evidence commands again and marks each criterion `met` or `not met`. You write the memo and make the call.
@@ -37,13 +54,7 @@ A no-go on the decision date costs you two to four weeks of build. You get those
 
 ## 📒 The register
 
-Every bet lives in one table, `BOOKIE.md`, at the root of your repo. Bookie writes it again after each stage. Here it is with three bets:
-
-| Bet | Name | Status | Stage | Decision date | Criteria | Updated |
-| --- | --- | --- | --- | --- | --- | --- |
-| BET-001 | Invoice match | Decided: no-go | finished | 2026-09-30 | 1 met, 3 not met | 2026-09-30 |
-| BET-002 | Weekly cash report | With users | iterate (9 of 11) | 2026-12-04 | 2 met, 2 open | 2026-11-16 |
-| BET-003 | Supplier risk alerts | Framing | frame (2 of 11) | | none | 2026-11-17 |
+**Every bet in one table.** The ticket at the top of this page is `BOOKIE.md`, the register at the root of your repo. Bookie writes it again after each stage. This page adds emoji to show the state of each bet.
 
 How to read it:
 
@@ -57,23 +68,14 @@ And how it works:
 - ✍️ **Bookie writes it.** The script owns the file, so an edit by hand is replaced at the next stage.
 - 🔐 **Private when you want.** Keep the bet record out of git, and `BOOKIE.md` stays out of git too.
 
-## 🧑‍💻 Built for developers
+### 🗺️ Eleven stages, one gate each
 
-- 🧱 **Your stack, ready.** Pick FastAPI and React at setup, and Bookie writes the commands for both parts into `AGENTS.md` and the layout into `DESIGN.md`. Python, TypeScript, and other stacks work too.
-- 🌿 **One commit per stage.** Each stage lands as `bookie(BET-NNN): <stage> done` on the branch `bet/bet-nnn`. Review it or revert it like any commit. Secrets stay out, and nothing is pushed.
-- 🧪 **Evals before the build.** You collect 20 to 50 real examples and turn them into an eval set before the thin slice exists.
-- 🛠️ **Builds with poteto-mode.** The build stage hands each unit to `/poteto-mode` from [pstack](https://github.com/backnotprop/pstack). Each verified unit goes to the build log.
-- 🙋 **You make the product calls.** The criteria, the date, the scope, the first users, and the decision come to you as questions in the agent.
-- 📦 **Files in your repo.** The skills are Markdown and Python standard-library scripts. There is no account to create and no server to run.
-
-## 🗺️ Eleven stages, one gate each
-
-Each stage must pass its gate before the next one starts.
+The Stage column of the register shows where each bet is in these eleven stages. Each stage must pass its gate before the next one starts.
 
 | # | Stage | What happens |
 | ---: | --- | --- |
 | 1 | 🏗️ setup | Writes `AGENTS.md`, `CLAUDE.md`, `PRODUCTS.md`, `DESIGN.md`, and the register. |
-| 2 | 📝 frame | Core question, kill criteria, and decision date. You confirm them. |
+| 2 | 📝 frame | Core question, no-go criteria, and decision date. You confirm them. |
 | 3 | 🛒 build-or-buy | At most one hour to find what already solves the problem. |
 | 4 | 🎯 scope | 20 to 50 real examples and one success metric. |
 | 5 | 🧪 evals | An eval set with yes/no checks and a judge rubric. |
@@ -85,6 +87,15 @@ Each stage must pass its gate before the next one starts.
 | 11 | 🏁 memo | Go, no-go, or pivot, in writing. |
 
 Stop at any stage. `/bookie BET-001` continues at the same stage, with your answers saved.
+
+## 🧑‍💻 Built for developers
+
+- 🧱 **Your stack, ready.** Pick FastAPI and React at setup, and Bookie writes the commands for both parts into `AGENTS.md` and the layout into `DESIGN.md`. Python, TypeScript, and other stacks work too.
+- 🌿 **One commit per stage.** Each stage lands as `bookie(BET-NNN): <stage> done` on the branch `bet/bet-nnn`. Review it or revert it like any commit. Secrets stay out, and nothing is pushed.
+- 🧪 **Evals before the build.** You collect 20 to 50 real examples and turn them into an eval set before the thin slice exists.
+- 🛠️ **Builds with poteto-mode.** The build stage hands each unit to `/poteto-mode` from [pstack](https://github.com/backnotprop/pstack). Each verified unit goes to the build log.
+- 🙋 **You make the product calls.** The criteria, the date, the scope, the first users, and the decision come to you as questions in the agent.
+- 📦 **Files in your repo.** The skills are Markdown and Python standard-library scripts. There is no account to create and no server to run.
 
 ## 🚀 Install bookie in a project
 
@@ -159,11 +170,68 @@ npx skills add backnotprop/pstack --skill '*' -y
 | --- | --- |
 | [`setup-bookie`](skills/setup-bookie/SKILL.md) | Sets up a project in one pass, in place of `setup-pstack`: pstack, model settings, project files, `.gitignore`, and a commit. |
 | [`bookie`](skills/bookie/SKILL.md) | Runs one bet from setup to the memo. |
-| [`bet-record`](skills/bet-record/SKILL.md) | Keeps the bet record: core question, kill criteria, decision date, build log, score, and memo. |
+| [`bet-record`](skills/bet-record/SKILL.md) | Keeps the bet record: core question, no-go criteria, decision date, build log, score, and memo. |
 | [`bet-diligence`](skills/bet-diligence/SKILL.md) | Writes a diligence memo on a dependency, product, or company, with evidence for each finding. |
 | [`bet-discovery`](skills/bet-discovery/SKILL.md) | Plans customer interviews and logs only what people did. |
 
 Each skill starts only from its slash command.
+
+## ❓ Before you install
+
+<details>
+<summary><b>Which agents does it work with?</b></summary>
+
+Bookie is built and tested with Claude Code. The skills use the Agent Skills format, so the `skills` CLI can install them for other agents too. Each bet skill starts only from a slash command that you type.
+
+</details>
+
+<details>
+<summary><b>What does it change in my repo?</b></summary>
+
+`/setup-bookie` writes `AGENTS.md`, `CLAUDE.md`, `PRODUCTS.md`, `DESIGN.md`, `.gitignore`, and `BOOKIE.md`, then makes one commit on the branch `setup/bookie`. A file that exists keeps its text and gets only its missing lines. Nothing is pushed.
+
+</details>
+
+<details>
+<summary><b>Do I need an account or an API key?</b></summary>
+
+Not for Bookie. The skills run inside the agent that you already use. The scripts need only Python 3.11 or later and its standard library.
+
+</details>
+
+<details>
+<summary><b>Can I use it on a project that already exists?</b></summary>
+
+Yes. Bookie adds only what is missing. For a bet that started before Bookie, it marks the finished stages done with the evidence that exists, and it does not repeat finished work.
+
+</details>
+
+<details>
+<summary><b>Can I score a bet before its decision date?</b></summary>
+
+Yes, with a written reason. No agent can move the date or change a no-go criterion after the frame stage. Only you can, and the record shows the change.
+
+</details>
+
+<details>
+<summary><b>What does a no-go cost me?</b></summary>
+
+The weeks up to the decision date, which you set 2 to 4 weeks after the build starts. The bet stays in the register, so your next idea starts with a record of what failed.
+
+</details>
+
+## 🏁 Write the terms first. Then let your agent build.
+
+Three commands from install to your first bet. Bookie asks for one paragraph about the problem, then runs the stages in order.
+
+```bash
+npx skills add niccolox/devekko.bookie
+```
+
+```text
+/setup-bookie   # once for each project
+/bookie         # start your first bet
+```
 
 ## 🔧 Develop the skills
 
