@@ -1,8 +1,10 @@
 <p align="center">
-  <img src="docs/assets/bookie-logo.svg" alt="bookie: a bet slip with three criteria, one met, one not met, and one open" width="560">
+  <img src="docs/assets/bookie-logo.svg" alt="Bookie logo: a bet slip with three criteria, one met, one not met, and one open" width="640">
 </p>
 
-<h3 align="center">Set the no-go criteria before your agent writes line one.</h3>
+<h1 align="center">Bookie: Product Bets for Agents</h1>
+
+<h2 align="center">Set the no-go criteria before your agent writes line one.</h2>
 
 <p align="center">
 Bookie runs each product idea as a bet in Claude Code or another coding agent:<br>
