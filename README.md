@@ -15,11 +15,25 @@ Bookie runs each product idea as a bet in Claude Code or another coding agent:<b
   ❓ <a href="#-before-you-install">FAQ</a>
 </p>
 
-```bash
-npx skills add niccolox/devekko.bookie
-```
+### 🚀 Start in 3 steps
 
-Then type two commands in your agent: `/setup-bookie` once for each project, and `/bookie` to start your first bet.
+1. **Install the skills.** Run this in the root of your project:
+
+   ```bash
+   npx skills add niccolox/devekko.bookie
+   ```
+
+2. **Set up the project.** Type this in your agent, once for each project:
+
+   ```text
+   /setup-bookie
+   ```
+
+3. **Start your first bet.** Type this in your agent:
+
+   ```text
+   /bookie
+   ```
 
 ### 🎟️ Your `BOOKIE.md` after three bets
 
@@ -222,16 +236,27 @@ The weeks up to the decision date, which you set 2 to 4 weeks after the build st
 
 ## 🏁 Write the terms first. Then let your agent build.
 
-Three commands from install to your first bet. Bookie asks for one paragraph about the problem, then runs the stages in order.
+Three steps from install to your first bet:
 
-```bash
-npx skills add niccolox/devekko.bookie
-```
+1. **Install the skills.** Run this in the root of your project:
 
-```text
-/setup-bookie   # once for each project
-/bookie         # start your first bet
-```
+   ```bash
+   npx skills add niccolox/devekko.bookie
+   ```
+
+2. **Set up the project.** Type this in your agent, once for each project:
+
+   ```text
+   /setup-bookie
+   ```
+
+3. **Start your first bet.** Type this in your agent:
+
+   ```text
+   /bookie
+   ```
+
+Bookie asks for one paragraph about the problem, then runs the stages in order.
 
 ## 🔧 Develop the skills
 
