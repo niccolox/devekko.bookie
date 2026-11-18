@@ -50,8 +50,8 @@
   /* top bar */
   .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-block: 22px; }
   .brand { display: flex; align-items: center; gap: 14px; color: var(--cream); text-decoration: none; }
-  .brand svg { width: 70px; height: auto; flex: none; }
-  .brand span { font-size: 34px; font-weight: 800; letter-spacing: -.8px; }
+  .brand svg { width: 64px; height: auto; flex: none; }
+  .brand span { font-family: var(--display); font-size: 36px; font-weight: 700; letter-spacing: -.5px; line-height: 1; }
   .top nav { display: flex; gap: 20px; flex-wrap: wrap; font-size: 16px; }
   .top nav a { color: var(--sage); text-decoration: none; }
   .top nav a:hover { color: var(--cream); }
@@ -219,21 +219,24 @@
 
 <div class="wrap">
   <header class="top">
-    <a class="brand" href="./" aria-label="bookie home">
-      <svg viewBox="40 36 180 128" aria-hidden="true">
-        <rect x="40" y="36" width="180" height="128" rx="12" fill="#f6efe0"/>
-        <circle cx="40" cy="100" r="13" fill="#0f2a1f"/>
-        <circle cx="220" cy="100" r="13" fill="#0f2a1f"/>
-        <line x1="84" y1="46" x2="84" y2="154" stroke="#0f2a1f" stroke-width="2" stroke-dasharray="5 6"/>
-        <text x="66" y="100" transform="rotate(-90 66 100)" text-anchor="middle" dominant-baseline="middle" font-family="monospace" font-size="15" font-weight="700" letter-spacing="2" fill="#0f2a1f">BET-001</text>
-        <path d="M99 68 l5 5 l11 -12" fill="none" stroke="#1f9d55" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <rect x="126" y="62" width="76" height="9" rx="4.5" fill="#c9bfa8"/>
-        <path d="M100 94 l12 12 M112 94 l-12 12" fill="none" stroke="#d64545" stroke-width="4.5" stroke-linecap="round"/>
-        <rect x="126" y="96" width="60" height="9" rx="4.5" fill="#c9bfa8"/>
-        <circle cx="106" cy="134" r="6" fill="none" stroke="#7d8590" stroke-width="3.5"/>
-        <rect x="126" y="130" width="68" height="9" rx="4.5" fill="#c9bfa8"/>
+    <a class="brand" href="./" aria-label="Bookie home">
+      <svg viewBox="-12 -24 392 300" aria-hidden="true">
+        <g transform="rotate(-6 180 125)">
+          <rect x="12" y="12" width="360" height="250" rx="24" fill="#06140d"/>
+          <rect width="360" height="250" rx="24" fill="#f6efe0"/>
+          <path d="M24 0H94V250H24A24 24 0 0 1 0 226V24A24 24 0 0 1 24 0Z" fill="#e0b44c"/>
+          <line x1="94" y1="12" x2="94" y2="238" stroke="#0f2a1f" stroke-width="6" stroke-dasharray="14 10"/>
+          <circle cx="0" cy="125" r="22" fill="#0f2a1f"/>
+          <circle cx="360" cy="125" r="22" fill="#0f2a1f"/>
+          <path d="M120 66 l15 15 l29 -32" fill="none" stroke="#1f9d55" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="186" y="54" width="140" height="24" rx="12" fill="#c3b799"/>
+          <path d="M124 110 l32 32 M156 110 l-32 32" fill="none" stroke="#d64545" stroke-width="16" stroke-linecap="round"/>
+          <rect x="186" y="114" width="110" height="24" rx="12" fill="#c3b799"/>
+          <circle cx="140" cy="190" r="15" fill="none" stroke="#7d8590" stroke-width="11"/>
+          <rect x="186" y="178" width="126" height="24" rx="12" fill="#c3b799"/>
+        </g>
       </svg>
-      <span>bookie</span>
+      <span>Bookie</span>
     </a>
     <nav aria-label="Page">
       <a href="#bet">How a bet works</a>
