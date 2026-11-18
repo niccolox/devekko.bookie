@@ -58,12 +58,18 @@
 
   /* hero */
   .hero { padding-block: clamp(12px, 3vw, 28px) 40px; }
+  .hero-logo { display: block; width: 100%; max-width: 640px; height: auto; margin: 0 0 28px; }
   h1 {
+    font-family: var(--sans); font-weight: 800;
+    font-size: clamp(26px, 3.2vw, 36px); line-height: 1.2; letter-spacing: -.3px;
+    margin: 0 0 10px; color: var(--cream);
+  }
+  .headline {
     font-family: var(--display); font-weight: 700;
-    font-size: clamp(38px, 5.6vw, 62px); line-height: 1.05; letter-spacing: -1px;
+    font-size: clamp(36px, 5.2vw, 58px); line-height: 1.05; letter-spacing: -1px;
     margin: 0 0 18px; max-width: 27ch;
   }
-  h1 em { font-style: normal; color: var(--gold); }
+  .headline em { font-style: normal; color: var(--gold); }
   .lede { font-size: clamp(18px, 2vw, 21px); color: var(--sage); max-width: 64ch; margin: 0 0 22px; }
   .lede b { color: var(--cream); font-weight: 600; }
 
@@ -240,7 +246,9 @@
 
   <main>
     <div class="hero">
-      <h1>Set the no-go criteria before your agent writes <em>line one.</em></h1>
+      <img class="hero-logo" src="assets/bookie-logo.svg" alt="" width="640" height="200">
+      <h1>Bookie: Product Bets for Agents</h1>
+      <h2 class="headline">Set the no-go criteria before your agent writes <em>line one.</em></h2>
       <p class="lede">Bookie runs each product idea as a bet in Claude Code or another coding agent: <b>fixed terms, a thin build, real users,</b> and a <b>go, no-go, or pivot</b> call on a date you pick first.</p>
         <div class="cmd">
           <div class="install" aria-label="Install commands">
